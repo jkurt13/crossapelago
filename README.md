@@ -3,7 +3,7 @@
 A crossword you play in the browser as part of an [Archipelago](https://archipelago.gg) multiworld.
 Other players send you letter keys and clues; solving words sends out checks.
 
-**Play:** https://jkurt13.github.io/Crossword-Archipelago/ (once GitHub Pages is on — see below)
+**Play:** https://jkurt13.github.io/crossword-randomizer/ (once GitHub Pages is on — see below)
 
 ## Files
 - `index.html` — the web client (this is what GitHub Pages serves).
@@ -24,7 +24,7 @@ To update the site later, upload the changed files again (or commit and push in 
 
 ### Sharing with friends
 - **Copy link** in the page header copies a link with the server and slot filled in. The password is never included.
-- You can also build links by hand: `https://jkurt13.github.io/Crossword-Archipelago/?server=archipelago.gg:38281&slot=Jacob`.
+- You can also build links by hand: `https://jkurt13.github.io/crossword-randomizer/?server=archipelago.gg:38281&slot=Jacob`.
 - The hosted page can reach **archipelago.gg** rooms and **servers on your own computer** (`localhost`).
 - Browsers block an https page from reaching a server on another machine on your LAN (e.g. `192.168.x.x`). For that, download `index.html` and open the file directly.
 
