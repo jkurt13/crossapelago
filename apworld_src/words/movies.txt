@@ -1,0 +1,240 @@
+# Movies word pack
+# Format: ANSWER|tier|clue|hard clue (optional)
+
+# ---- Titles ----
+JAWS|1|1975 shark thriller|"You're gonna need a bigger boat" film
+ALIEN|1|1979 film where no one can hear you scream|Ridley Scott's Nostromo nightmare
+ALIENS|2|James Cameron's 1986 sequel|Ripley's return, plural
+ROCKY|1|Sylvester Stallone boxing classic|Balboa's film
+PSYCHO|2|Hitchcock's Bates Motel thriller|1960 shower-scene film
+VERTIGO|3|Hitchcock film about a fear of heights|Scottie's dizzy obsession
+CASABLANCA|2|"Here's looking at you, kid" film|Rick's Cafe setting
+TITANIC|1|1997 film about a doomed ocean liner|"I'm the king of the world!" film
+AVATAR|1|James Cameron film set on Pandora|Na'vi epic
+FROZEN|1|Disney film with "Let It Go"|Arendelle musical
+MOANA|1|Disney film about a Polynesian wayfinder|Motunui voyager's film
+SHREK|1|Ogre who lives in a swamp|DreamWorks green giant
+CARS|1|Pixar film with Lightning McQueen|Radiator Springs film
+COCO|1|Pixar film about the Day of the Dead|"Remember Me" film
+WALLE|1|Pixar robot who cleans up Earth|EVE's admirer
+BRAVE|2|Pixar film about Merida|Courageous
+ENCANTO|2|Disney film about the Madrigals|"We Don't Talk About Bruno" film
+BAMBI|1|Disney fawn|Thumper's friend
+DUMBO|1|Disney elephant who flies|Big-eared circus star
+PINOCCHIO|2|Puppet whose nose grows|Geppetto's creation
+ALADDIN|1|Disney street rat with a genie|Agrabah hero
+MULAN|1|Disney warrior who poses as a man|Fa of legend
+TARZAN|2|Jungle man raised by apes|Jane's man
+HERCULES|2|Disney demigod hero|Zero to hero
+GREASE|1|Musical with Danny and Sandy|Rydell High musical
+JUMANJI|2|Board game that comes to life|Robin Williams jungle film
+GOONIES|2|Kids hunting One-Eyed Willy's treasure|"Goonies never say die" film
+GREMLINS|2|Don't feed them after midnight|Mogwai monster movie
+INCEPTION|2|Nolan film about dreams within dreams|Spinning-top film
+MEMENTO|3|Nolan film told in reverse|Keepsake
+DUNE|1|Desert planet epic|Arrakis tale
+MATRIX|1|Film with red and blue pills|Neo's simulated world
+TOPGUN|1|Tom Cruise fighter-pilot film|Maverick's school
+JURASSIC|1|___ Park|Dinosaur-era
+GODZILLA|1|Giant lizard that stomps Tokyo|Kaiju king
+KINGKONG|1|Giant ape on the Empire State Building|Skull Island ape
+BARBIE|1|2023 film in pink|Mattel doll's film
+GLADIATOR|2|"Are you not entertained?" film|Maximus's film
+BRAVEHEART|2|Mel Gibson's William Wallace film|"Freedom!" film
+SCREAM|2|Horror film with Ghostface|Shriek
+HALLOWEEN|2|Michael Myers slasher|October 31 film
+CLUELESS|2|"As if!" 1995 comedy|Emma, updated
+ELF|1|Will Ferrell Christmas comedy|Buddy's film
+HOMEALONE|1|Kevin defends his house|Holiday booby-trap film
+AMADEUS|3|1984 film about Mozart|Salieri's rival
+FARGO|3|Coen brothers' snowy crime film|North Dakota city
+ROCKETMAN|3|Elton John biopic|Space traveler
+WHIPLASH|3|Drumming film with J.K. Simmons|Neck injury
+PARASITE|2|Bong Joon-ho's Oscar winner|Freeloader
+ZOOTOPIA|2|Disney city of animals|Judy Hopps's city
+TANGLED|2|Disney's Rapunzel film|Knotted
+MADAGASCAR|2|DreamWorks zoo escape film|Big island off Africa
+KUNGFU|2|___ Panda|Martial arts
+TRON|2|Film set inside a computer|Grid film
+ROBOCOP|2|Cyborg cop of Detroit|Murphy's metal body
+PREDATOR|2|Alien hunter vs. Schwarzenegger|Hunter
+TERMINATOR|1|"I'll be back" cyborg|Skynet's killer
+SPEED|2|Bus can't slow below 50|Velocity
+TWISTER|2|Storm-chasing film|Party game on a mat
+ARMAGEDDON|3|Asteroid-drilling film|Final battle
+SIGNS|3|Crop circle thriller|Omens
+MULHOLLAND|3|___ Drive|Hollywood road
+CHINATOWN|3|"Forget it, Jake" film|Noir set in LA
+ROSEMARY|3|___'s Baby|Herb
+
+# ---- Characters ----
+FIONA|1|Shrek's princess|Ogre bride
+DONKEY|1|Shrek's talkative sidekick|Burro
+NEMO|1|Clownfish lost at sea|Captain of the Nautilus
+DORY|1|Forgetful blue tang|"Just keep swimming" fish
+WOODY|1|Toy Story's cowboy|Sheriff doll
+BUZZ|1|Lightyear of Toy Story|Aldrin's nickname
+REMY|2|Cooking rat in Paris|Chef rodent
+SIMBA|1|Lion King cub|Mufasa's son
+MUFASA|2|Simba's father|Pride Rock king
+SCAR|2|Simba's villainous uncle|Mark left by a wound
+NALA|2|Simba's friend and queen|Lioness of Pride Rock
+TIMON|2|Hakuna matata meerkat|Pumbaa's pal
+PUMBAA|3|Hakuna matata warthog|Timon's pal
+BELLE|1|Beauty who loves the Beast|Bookish heroine
+ARIEL|1|The Little Mermaid|Font name
+URSULA|2|Sea witch|Ariel's octopus-like foe
+ELSA|1|Ice queen of Arendelle|Anna's sister
+ANNA|1|Elsa's sister|Palindromic princess
+OLAF|1|Frozen's snowman|Warm-hug lover
+STITCH|1|Lilo's alien pal|Experiment 626
+LILO|2|Stitch's Hawaiian friend|Ohana girl
+GROOT|1|"I am Groot" speaker|Tree Guardian
+THANOS|1|Snapping Marvel villain|Infinity Gauntlet wearer
+THOR|1|Marvel's god of thunder|Mjolnir wielder
+LOKI|1|Thor's mischievous brother|God of mischief
+HULK|1|Big green Avenger|Banner's alter ego
+IRONMAN|1|Tony Stark's hero identity|Triathlon event
+BATMAN|1|Dark Knight|Caped Crusader
+JOKER|1|Batman's clown villain|Wild card
+ROBIN|1|Batman's sidekick|Boy Wonder
+GOTHAM|2|Batman's city|New York nickname
+YODA|1|Small green Jedi master|"Do or do not" sayer
+VADER|1|Darth ___|Anakin, later
+LUKE|1|Skywalker of Star Wars|Farm boy of Tatooine
+LEIA|1|Princess with hair buns|Organa
+HANSOLO|1|Millennium Falcon captain|Shot-first smuggler
+CHEWBACCA|1|Wookiee copilot|Chewie
+JEDI|1|Lightsaber-wielding knight|Order member
+SITH|2|Dark side order|Rule of Two followers
+EWOK|2|Furry Endor native|Forest-moon fighter
+DROID|1|Star Wars robot|R2-D2, e.g.
+FRODO|1|Ring-bearing hobbit|Baggins
+GANDALF|1|Grey wizard|Mithrandir
+GOLLUM|1|"My precious" creature|Smeagol
+SAURON|2|Dark lord of Mordor|Eye of fire
+ARAGORN|2|Strider, the heir of Isildur|Elessar
+LEGOLAS|2|Elf archer of the Fellowship|Mirkwood prince
+GIMLI|2|Dwarf of the Fellowship|Son of Gloin
+MORDOR|2|Where one does not simply walk|Land of shadow
+HOBBIT|1|Short Shire dweller|Halfling
+HERMIONE|1|Granger of Hogwarts|Brightest witch of her age
+DUMBLEDORE|2|Hogwarts headmaster|Albus
+SNAPE|2|Potions master|Half-Blood Prince
+HAGRID|1|Hogwarts groundskeeper|"Yer a wizard" speaker
+VOLDEMORT|2|He Who Must Not Be Named|Tom Riddle
+HOGWARTS|1|School of witchcraft|Castle school
+QUIDDITCH|2|Sport on broomsticks|Snitch-chasing game
+MUGGLE|2|Non-magic person|Non-wizard
+NEO|1|The One in The Matrix|New, prefix
+MORPHEUS|2|Offers red or blue pill|Dream god
+TRINITY|3|Matrix heroine|Group of three
+RIPLEY|2|Alien heroine|Believe it or not guy
+INDIANA|1|Jones of adventure films|Hoosier State
+MAVERICK|2|Top Gun call sign|Independent thinker
+FORREST|2|Gump of film|Wooded area, almost
+BUDDY|2|Elf's hero|Pal
+KEVIN|2|Home Alone kid|McCallister boy
+DOC|2|Emmett Brown's nickname|Physician
+MARTY|2|McFly of Back to the Future|Hoverboard rider
+DELOREAN|2|Time machine car|Gull-winged car
+BOND|1|James of MI6|Stock purchase
+GOLDFINGER|3|Bond villain with a Midas touch|Auric
+DRACULA|1|Transylvanian count|Stoker's vampire
+MUMMY|1|Wrapped Egyptian undead|Mom, in Britain
+EDWARD|2|Scissorhands of film|Twilight vampire
+ROSEBUD|3|Citizen Kane's last word|Sled name
+HAL|2|2001's rogue computer|"I'm sorry, Dave" speaker
+TOTORO|2|Ghibli forest spirit|Catbus friend
+PONYO|3|Ghibli goldfish girl|Miyazaki's sea princess
+CHIHIRO|3|Spirited Away's heroine|Sen
+KAONASHI|3|Spirited Away's No-Face|Masked spirit
+SHAGGY|2|Scooby's pal|Unkempt
+SCOOBY|1|Mystery-solving Great Dane|Doo follower
+GRINCH|1|Stole Christmas|Whoville's grump
+WONKA|1|Chocolate factory owner|Willy
+OOMPA|3|___-Loompa|Wonka worker's first half
+SHERLOCK|1|Baker Street detective|Holmes
+WATSON|2|Holmes's partner|Elementary, my dear ___
+PADDINGTON|2|Marmalade-loving bear|London station bear
+MINION|1|Yellow Despicable Me helper|Underling
+
+# ---- People ----
+HITCHCOCK|2|Master of suspense|Director of The Birds
+SPIELBERG|1|Director of E.T. and Jaws|Amblin founder
+KUBRICK|2|Director of The Shining|2001 auteur
+SCORSESE|2|Director of Goodfellas|Taxi Driver director
+TARANTINO|2|Director of Pulp Fiction|Kill Bill auteur
+NOLAN|2|Director of Oppenheimer|Christopher of Interstellar
+LUCAS|2|Star Wars creator George|Skywalker Ranch owner
+CAMERON|2|Titanic director James|Avatar auteur
+BURTON|2|Tim of Beetlejuice|Gothic director
+MIYAZAKI|2|Studio Ghibli director|Hayao of anime
+PEELE|3|Director of Get Out|Jordan of horror
+GERWIG|3|Director of Barbie|Greta of Lady Bird
+KUROSAWA|3|Director of Seven Samurai|Akira of Japan
+CHAPLIN|2|Silent star with a bowler hat|The Tramp
+HANKS|1|Actor Tom of Forrest Gump|Woody's voice
+STREEP|2|Actress Meryl|Record Oscar nominee
+DENIRO|2|"You talkin' to me?" actor|Robert of Taxi Driver
+PACINO|2|Actor Al of Scarface|Michael Corleone portrayer
+MONROE|2|Marilyn of Hollywood|Blonde bombshell
+HEPBURN|2|Audrey of Breakfast at Tiffany's|Katharine or Audrey
+DIESEL|3|Vin of Fast & Furious|Truck fuel
+KEANU|1|Reeves of John Wick|Neo's actor
+ZENDAYA|2|Actress in Dune and Euphoria|One-named star
+DICAPRIO|2|Leonardo of Titanic|Jack Dawson's actor
+
+# ---- Film terms ----
+OSCAR|1|Academy Award|Grouch of Sesame Street
+CANNES|2|French film festival city|Palme d'Or site
+SUNDANCE|2|Utah film festival|Kid of the Wild West
+HOLLYWOOD|1|LA film capital|Tinseltown
+BOLLYWOOD|2|Mumbai film industry|Hindi cinema
+DIRECTOR|1|Person who yells "Action!"|Board member
+PRODUCER|2|Film's money manager|Maker
+SCRIPT|1|Screenplay|Handwriting
+SEQUEL|1|Part two|Follow-up
+PREQUEL|2|Story set before the original|Backstory film
+REMAKE|1|New version of an old film|Redo
+TRAILER|1|Movie preview|Mobile home
+CAMEO|2|Brief celebrity appearance|Carved brooch
+STUNT|1|Dangerous scene for a double|Hinder growth
+EXTRA|2|Background actor|Bonus
+CASTING|2|Choosing actors|Fishing move
+PREMIERE|2|Opening night|First showing
+POPCORN|1|Movie snack|___ flick
+MATINEE|2|Afternoon showing|Idol, once
+IMAX|2|Giant-screen format|Big-screen brand
+REEL|2|Film spool|Stagger
+TAKE|1|One filmed attempt|Grab
+SCENE|1|Part of a film|Commotion
+MONTAGE|2|Training sequence, often|Quick-cut sequence
+BLOOPER|2|Outtake flub|Gaffe
+CREDITS|1|Names at the end|Cash to spend
+SPOILER|1|Plot reveal|Car fin
+SEQUENCE|3|Series of scenes|Order
+CLOSEUP|2|Tight camera shot|Near view
+SOUNDTRACK|2|Film's music|Audio album
+SUBTITLES|2|On-screen translation|Captions
+WESTERN|1|Cowboy film|Occidental
+NOIR|2|Shadowy crime genre|Pinot ___
+HORROR|1|Scary genre|Dread
+MUSICAL|1|Film with songs|Tuneful
+ANIME|1|Japanese animation|Toon style from Japan
+THRILLER|2|Suspense film|Michael Jackson album
+ROMCOM|2|Love-story comedy, for short|Meet-cute genre
+BIOPIC|2|Film about a real life|Life story on screen
+PIXAR|1|Toy Story studio|Luxo lamp studio
+DISNEY|1|Mickey's studio|Walt
+DREAMWORKS|2|Shrek's studio|Spielberg cofounded studio
+GHIBLI|2|Totoro's studio|Miyazaki's studio
+MARVEL|1|Avengers studio|Wonder
+STUDIO|1|Film company|Workshop
+DUBBING|3|Replacing dialogue audio|Knighting
+SCREENPLAY|2|Film script|Written film
+CINEMA|1|Movie theater|Film art
+PROJECTOR|2|Machine that shows the film|Overhead device
+LIGHTSABER|2|Jedi's weapon|Plasma blade
+RINGWRAITH|3|Nazgul|Black rider
+HORCRUX|2|Voldemort's soul container|Diary, e.g.

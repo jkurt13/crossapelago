@@ -1,0 +1,806 @@
+# General word pack
+# Format: ANSWER|tier|clue|hard clue (optional)
+# tier: 1 = easy/common, 2 = medium, 3 = hard. Answers: A-Z only, 3-10 letters.
+# Hard difficulty uses the hard clue when one is given.
+
+# ---- Food & drink ----
+APPLE|1|Fruit that keeps the doctor away|Newton's falling inspiration
+BANANA|1|Yellow fruit that monkeys love|Split at the ice cream parlor
+CHERRY|1|Red fruit often found on a sundae|It's on top, proverbially
+LEMON|1|Sour yellow citrus|Dud car, informally
+MANGO|1|Tropical stone fruit|Chutney fruit
+GRAPE|1|Fruit that becomes a raisin|Vineyard harvest
+PEACH|1|Fuzzy summer fruit|Georgia's state fruit
+MELON|1|Cantaloupe or honeydew|Casaba, for one
+OLIVE|1|Martini garnish|Branch offered in peace
+ONION|1|Vegetable that can make you cry|Layered bulb
+CARROT|1|Snowman's nose|Incentive paired with a stick
+POTATO|1|Spud|Couch ___
+TOMATO|1|Ketchup base|Fruit often mistaken for a vegetable
+PEPPER|1|Salt's partner|Bell or jalapeno
+GARLIC|1|Vampire repellent|Clove source
+BREAD|1|Loaf from a bakery|Dough, in slang
+BAGEL|1|Ring-shaped roll with a hole|Lox holder
+PASTA|1|Spaghetti or penne|Rigatoni, e.g.
+PIZZA|1|Pie topped with pepperoni|Margherita, for one
+TACO|1|Folded tortilla dish|Tuesday dinner, alliteratively
+SUSHI|1|Japanese dish with rice and fish|Nigiri or maki
+HONEY|1|Sweet product of bees|Term of endearment
+BUTTER|1|Churned dairy spread|Flatter, with "up"
+CHEESE|1|Cheddar or brie|Photographer's request
+TOAST|1|Browned bread|Raised-glass salute
+COFFEE|1|Morning brew|Java
+TEA|1|Earl Grey, for one|Oolong or pekoe
+SUGAR|1|Sweetener in a bowl|Sucrose
+SALT|1|Shaker content|Old sailor
+SOUP|1|Bowl of broth|Minestrone, e.g.
+STEAK|1|Ribeye or sirloin|T-bone, for one
+WAFFLE|1|Grid-patterned breakfast item|Equivocate
+DONUT|1|Glazed ring pastry|Cruller cousin
+COOKIE|1|Chocolate chip treat|Browser tracker
+CANDY|1|Halloween haul|Arm ___ (eye candy's cousin)
+CAKE|1|Dessert with candles|Piece of ___ (easy task)
+PIE|1|Apple ___|Easy as ___
+RICE|1|Grain in a sushi roll|Pilaf base
+BEAN|1|Kidney or pinto|Noggin, slangily
+EGG|1|Omelet ingredient|Urge, with "on"
+MILK|1|Cereal pourer|Exploit fully
+JUICE|1|Orange drink|Electricity, slangily
+SALAD|1|Bowl of greens|Caesar, for one
+SAUCE|1|Marinara, for one|Sass
+SPICE|1|Cinnamon or cumin|Variety is the ___ of life
+NOODLE|1|Ramen strand|Head, informally
+CEREAL|1|Breakfast in a bowl|Grain, or a morning box
+MUFFIN|1|Blueberry breakfast bake|English ___
+PICKLE|1|Brined cucumber|Tight spot
+PRETZEL|2|Twisted salty snack|Knotty snack
+BURRITO|2|Wrapped Mexican dish|Tortilla bundle
+LASAGNA|2|Layered pasta dish|Garfield's favorite dish
+RAVIOLI|2|Stuffed pasta squares|Filled pasta pillows
+AVOCADO|2|Guacamole base|Alligator pear
+BROCCOLI|2|Green vegetable that looks like tiny trees|Floret-bearing crucifer
+SPINACH|2|Popeye's power food|Leafy green in a Florentine dish
+CELERY|2|Crunchy stalk in a Bloody Mary|Ants on a log base
+LETTUCE|2|Salad leaf|Romaine or iceberg
+CABBAGE|2|Coleslaw vegetable|Sauerkraut source
+PUMPKIN|2|Jack-o'-lantern gourd|Cinderella's coach, originally
+COCONUT|2|Hairy tropical fruit|Palm product with milk
+PAPAYA|2|Tropical fruit with black seeds|Pawpaw
+KIWI|2|Fuzzy brown fruit|New Zealander, informally
+FIG|2|Newton filling|Not give a ___
+DATE|2|Palm fruit|Calendar square
+PLUM|2|Prune, before drying|Choice, as a job
+LIME|2|Margarita garnish|Key ___ pie
+PEAR|2|Bartlett or Bosc|Shape of some bodies
+BERRY|1|Straw or blue fruit|Halle of film
+YOGURT|2|Cultured dairy snack|Parfait layer
+OATMEAL|2|Warm breakfast porridge|Rolled grain dish
+CROISSANT|3|Flaky crescent pastry|Laminated-dough breakfast
+ESPRESSO|3|Strong coffee shot|Barista's pull
+CINNAMON|2|Spice on a sticky bun|Cassia relative
+VANILLA|2|Ice cream flavor from orchids|Plain, figuratively
+CARAMEL|2|Chewy candy of cooked sugar|Burnt-sugar sauce
+TRUFFLE|3|Pricey fungus or chocolate|Pig-sniffed delicacy
+BRISKET|3|Smoked beef cut|Barbecue pitmaster's test
+DUMPLING|2|Filled dough ball|Gyoza, e.g.
+OMELET|2|Folded egg dish|Denver ___
+
+# ---- Animals ----
+TIGER|1|Striped big cat|Bengal ___
+LION|1|King of the jungle|Pride member
+ZEBRA|1|Striped horse relative|Referee, slangily
+HORSE|1|Stable animal|Gym vaulting apparatus
+MOUSE|1|Cheese-loving rodent|Computer clicker
+EAGLE|1|Bald national bird|Two under par
+OWL|1|Nocturnal hooter|Night ___ (late riser)
+FROG|1|Hopping amphibian|Lump in the throat
+SNAKE|1|Slithering reptile|Treacherous person
+SHARK|1|Ocean predator with fins|Card hustler
+WHALE|1|Largest mammal in the sea|Casino high roller
+OTTER|1|River animal that floats on its back|Sea ___ (kelp napper)
+RABBIT|1|Hopping animal with long ears|Magician's hat pull
+TURTLE|1|Shelled reptile|Neck of a sweater
+PANDA|1|Bamboo-eating bear|Giant or red animal
+KOALA|1|Eucalyptus-eating marsupial|Australian "bear" that isn't
+LLAMA|1|Andean pack animal|Alpaca cousin
+MOOSE|1|Antlered animal of the north|Bullwinkle, for one
+BEAVER|1|Dam-building rodent|Eager ___
+PARROT|1|Talking bird|Repeat mindlessly
+PENGUIN|1|Tuxedoed bird that can't fly|Emperor or king bird
+SPIDER|1|Eight-legged web spinner|Arachnid
+BEE|1|Buzzing pollinator|Spelling contest
+ANT|1|Tiny colony insect|Picnic pest
+CAT|1|Purring pet|Jazz musician, in old slang
+DOG|1|Man's best friend|Follow persistently
+COW|1|Moo maker|Intimidate
+PIG|1|Pen dweller that oinks|Glutton
+DUCK|1|Quacking bird|Avoid a punch
+GOOSE|1|Honking bird|Poke playfully
+CAMEL|1|Desert animal with humps|Dromedary
+RAVEN|1|Poe's bird|Glossy black, as hair
+SALMON|1|Fish that swims upstream|Pinkish-orange shade
+CRAB|1|Sideways-walking crustacean|Grouch
+FOX|1|Sly animal with a bushy tail|Attractive person, slangily
+WOLF|1|Pack animal that howls|Eat greedily
+BEAR|1|Grizzly or polar animal|Tolerate
+DEER|1|Animal with antlers|Bambi, for one
+SHEEP|1|Woolly farm animal|Blind follower
+GOAT|1|Bearded farm animal|Greatest of all time, acronymically
+MONKEY|1|Banana-loving primate|Tinker, with "around"
+GORILLA|2|Largest primate|Silverback
+GIRAFFE|1|Tallest animal|Long-necked savanna browser
+HIPPO|1|River horse, for short|Pygmy ___
+RHINO|2|Horned African animal|Money, in old British slang
+ELEPHANT|1|Animal with a trunk|Pachyderm
+DOLPHIN|1|Smart sea mammal|Porpoise lookalike
+OCTOPUS|1|Eight-armed sea creature|Ink-squirting cephalopod
+SQUID|2|Calamari source|Kraken, perhaps
+LOBSTER|2|Red crustacean with claws|Thermidor seafood
+JELLYFISH|2|Stinging sea blob|Medusa, biologically
+STARFISH|2|Five-armed sea creature|Sea star
+SEAL|1|Barking sea mammal|Stamp of approval
+WALRUS|2|Tusked Arctic mammal|Carroll's oyster eater
+FLAMINGO|2|Pink wading bird|Lawn ornament bird
+PEACOCK|2|Bird with a showy tail|Show-off
+HAWK|2|Bird of prey|Sell aggressively
+FALCON|2|Fastest bird in a dive|Peregrine
+CROW|1|Black bird|Boast
+PIGEON|1|City bird|Easy mark
+ROBIN|1|Red-breasted bird|Batman's sidekick
+SPARROW|2|Small brown songbird|Jack of pirate films
+SWAN|1|Graceful white bird|Ugly duckling, grown up
+TOUCAN|2|Bird with a huge colorful bill|Froot Loops mascot, e.g.
+HEDGEHOG|2|Spiny little mammal|Prickly insectivore
+SQUIRREL|1|Nut-burying rodent|Hoard, with "away"
+HAMSTER|1|Pet that runs on a wheel|Cheek-pouched pet
+BADGER|2|Burrowing striped mammal|Pester
+FERRET|2|Weasel-like pet|Search, with "out"
+LIZARD|1|Scaly reptile|Gecko or iguana
+IGUANA|2|Green lizard pet|Large arboreal lizard
+GECKO|2|Wall-climbing lizard|Sticky-toed reptile
+ALLIGATOR|2|Florida swamp reptile|Gator
+CHEETAH|1|Fastest land animal|Spotted sprinter
+LEOPARD|2|Spotted big cat|It can't change its spots
+JAGUAR|2|Spotted cat of the Americas|British luxury car
+PANTHER|2|Black big cat|Pink ___ (Clouseau film)
+BUFFALO|2|Bison, loosely|Bewilder
+BISON|2|Plains grazer|American buffalo
+OSTRICH|2|Largest bird|Head-in-sand bird, in myth
+EMU|2|Flightless Australian bird|Ostrich relative
+MOTH|1|Flame-attracted insect|Closet pest
+BUTTERFLY|1|Colorful winged insect|Swim stroke
+BEETLE|2|Hard-shelled insect|Classic VW
+CRICKET|2|Chirping insect|Bat-and-wicket sport
+SCORPION|2|Stinging arachnid|Zodiac sign's creature
+SLOTH|2|Very slow tree mammal|One of the seven deadly sins
+ARMADILLO|3|Armored mammal|Texas roadside roller
+PLATYPUS|3|Egg-laying duck-billed mammal|Monotreme with a bill
+AARDVARK|3|Ant-eating burrower|Dictionary's early animal
+NARWHAL|3|Tusked Arctic whale|Unicorn of the sea
+CHAMELEON|3|Color-changing lizard|Fickle person
+MONGOOSE|3|Cobra fighter|Rikki-Tikki-Tavi, e.g.
+WOMBAT|3|Burrowing Australian marsupial|Cube-dropping marsupial
+MANATEE|3|Sea cow|Slow sirenian
+
+# ---- Nature & science ----
+OCEAN|1|Atlantic or Pacific|Vast expanse
+RIVER|1|Flowing body of water|Poker's fifth card
+LAKE|1|Inland body of water|Tahoe, for one
+ISLAND|1|Land surrounded by water|No man is one, per Donne
+DESERT|1|Dry, sandy region|Abandon
+FOREST|1|Area thick with trees|Can't see it for the trees
+MOUNTAIN|1|Everest, for one|Heap
+VALLEY|1|Low land between hills|Silicon ___
+CANYON|1|Deep gorge|Grand one in Arizona
+BEACH|1|Sandy shore|Strand
+CLOUD|1|White puff in the sky|Online storage
+RAIN|1|Precipitation from clouds|___ check
+SNOW|1|Winter flakes|Fool, with "job"
+STORM|1|Thunder and lightning event|Charge in angrily
+THUNDER|1|Boom after a flash|Norse god's domain
+WIND|1|Moving air|Coil
+SUN|1|Star at the center of our solar system|Sol
+MOON|1|Earth's satellite|Luna
+STAR|1|Twinkling light in the night sky|Headliner
+PLANET|1|Mars or Venus|Wanderer, etymologically
+COMET|1|Icy body with a tail|Halley's visitor
+GALAXY|1|Milky Way, for one|Andromeda, e.g.
+ORBIT|1|Path around a planet|Sphere of influence
+ROCKET|1|Launch vehicle|Shoot up
+SPACE|1|The final frontier|Keyboard's longest key
+EARTH|1|Third planet from the sun|Terra
+TREE|1|Oak or maple|Family diagram
+FLOWER|1|Bloom in a garden|Best of the bunch
+ROSE|1|Red flower with thorns|Got up
+TULIP|1|Dutch spring flower|17th-century bubble bloom
+DAISY|1|White-petaled flower|Fresh as one
+GRASS|1|Lawn covering|Snitch, slangily
+LEAF|1|Autumn faller|Page
+ROOT|1|Underground part of a plant|Cheer
+SEED|1|What you plant|Tournament ranking
+MOSS|1|Green growth on rocks|Rolling stones gather none
+STONE|1|Rock|Fourteen pounds, in Britain
+CRYSTAL|1|Clear gem-like mineral|Quartz, e.g.
+GOLD|1|Precious yellow metal|Au
+SILVER|1|Second-place medal metal|Ag
+IRON|1|Metal in steel|Fe
+COPPER|1|Penny metal|Cu
+DIAMOND|1|Hardest gemstone|Baseball field
+RUBY|1|Red gemstone|Dorothy's slippers
+EMERALD|1|Green gemstone|Oz's city color
+PEARL|1|Gem made by an oyster|Words of wisdom
+VOLCANO|1|Mountain that erupts|Etna or Fuji
+GLACIER|2|Slow river of ice|Calving ice mass
+TORNADO|1|Twister|Funnel cloud
+HURRICANE|2|Tropical cyclone|Katrina, e.g.
+RAINBOW|1|Colorful arc after rain|ROYGBIV
+LIGHTNING|2|Flash in a storm|Bolt
+BREEZE|1|Gentle wind|Cinch
+FOG|1|Low cloud|Confusion
+MIST|1|Light fog|Spritz
+DEW|1|Morning grass droplets|Mountain ___
+FROST|1|Icy morning coating|Poet Robert
+ICICLE|2|Hanging ice spike|Frozen drip
+PEBBLE|1|Small smooth stone|Flintstone girl
+BOULDER|2|Huge rock|Colorado college town
+CAVE|1|Hollow in a hillside|Give in
+CLIFF|1|Steep rock face|___hanger
+MEADOW|2|Grassy field|Lea
+SWAMP|1|Wet, marshy land|Overwhelm
+JUNGLE|1|Dense tropical forest|Concrete ___ (city)
+PRAIRIE|2|Grassy plains|Little House setting
+TUNDRA|2|Treeless Arctic plain|Permafrost region
+OASIS|2|Desert water spot|Refuge
+LAGOON|2|Shallow coastal water|Blue ___
+CORAL|2|Reef builder|Pinkish-orange
+ATOM|1|Smallest unit of an element|Tiny bit
+MAGNET|1|Fridge sticker|Something that attracts
+GRAVITY|1|Force that keeps us grounded|Seriousness
+ENERGY|1|Power|Pep
+LIGHT|1|Opposite of dark|Not heavy
+SHADOW|1|Dark shape cast by light|Tail secretly
+FIRE|1|Flames|Let go from a job
+WATER|1|H2O|Dilute, with "down"
+ICE|1|Frozen water|Kill, in gangster films
+STEAM|1|Water vapor|Pinball wizard's momentum
+OXYGEN|2|Gas we breathe|Element number eight
+CARBON|2|Element in diamonds and graphite|___ copy
+HYDROGEN|3|Lightest element|Element number one
+NEUTRON|3|Uncharged particle|Nucleus neutral
+PROTON|3|Positive particle|Nucleus positive
+ECLIPSE|2|When the moon blocks the sun|Outshine
+NEBULA|3|Cloud in space|Star nursery
+QUASAR|3|Bright galactic nucleus|Distant radio source
+SPECTRUM|3|Range of colors|Full range
+FOSSIL|2|Ancient preserved remains|Old fogey
+MAMMAL|2|Warm-blooded milk producer|Whale, surprisingly
+REPTILE|2|Cold-blooded scaly animal|Snake or skink
+MOLECULE|3|Bonded atoms|H2O, e.g.
+EQUATOR|2|Earth's middle line|Zero latitude
+HORIZON|2|Where earth meets sky|Range of experience
+
+# ---- Home & objects ----
+HOUSE|1|Place to live|Casino, in betting
+CASTLE|1|Fortress with a moat|Chess rook
+TOWER|1|Tall narrow building|Tarot card of upheaval
+BRIDGE|1|Span over a river|Card game for four
+DOOR|1|Entry you can knock on|Portal
+WINDOW|1|Glass pane in a wall|Opportunity period
+ROOF|1|Top of a house|Fiddler's perch
+KITCHEN|1|Room with a stove|Galley
+GARDEN|1|Plot for growing plants|Eden
+GARAGE|1|Place to park a car|___ band
+CHAIR|1|Seat with a back|Run a committee
+TABLE|1|Dining surface|Postpone
+LAMP|1|Light on a nightstand|Aladdin's find
+CLOCK|1|Timekeeper on the wall|Punch, slangily
+MIRROR|1|Reflective glass|Imitate
+PILLOW|1|Bed cushion|___ fight
+BLANKET|1|Bed cover|Covering everything
+CANDLE|1|Wax light with a wick|Can't hold one to
+BASKET|1|Woven container|Hoop score
+BOTTLE|1|Glass container for liquid|Courage, informally
+BUCKET|1|Pail|___ list
+HAMMER|1|Nail driver|Thor's weapon
+LADDER|1|Climbing tool with rungs|Run in stockings
+SHOVEL|1|Digging tool|Spade
+ANCHOR|1|Ship stopper|News desk host
+COMPASS|1|Navigator's tool that points north|Moral guide
+MAP|1|Chart for travelers|Plan, with "out"
+KEY|1|Lock opener|Musical scale
+LOCK|1|Door security device|Sure thing
+CHEST|1|Treasure box|Torso
+SWORD|1|Knight's blade|Mightier-than-pen loser
+SHIELD|1|Knight's protection|Guard
+ARROW|1|Projectile shot from a bow|Cursor shape
+BOW|1|Archer's weapon|Take one on stage
+HELMET|1|Protective headgear|Football head gear
+ARMOR|1|Knight's suit of metal|Chink in one's ___
+POTION|1|Magic brew in a flask|Love ___
+CROWN|1|Royal headpiece|Tooth cap
+THRONE|1|Royal seat|Game of ___
+SOFA|1|Couch|Davenport
+CARPET|1|Floor covering|Magic ___ ride
+CURTAIN|1|Window drape|Final ___ (the end)
+SHELF|1|Book holder on a wall|Put on the ___ (postpone)
+DRAWER|1|Dresser compartment|Artist, literally
+BATHTUB|2|Place for a soak|Gin source, in Prohibition
+FAUCET|2|Tap|Spigot
+STAIRS|1|Steps between floors|Flight
+ATTIC|2|Space under the roof|Garret
+BASEMENT|2|Room below ground|Bargain ___
+CHIMNEY|2|Santa's entrance|Smokestack
+FENCE|1|Yard boundary|Receiver of stolen goods
+MAILBOX|1|Where letters are delivered|Inbox, digitally
+UMBRELLA|1|Rain shield|Covering term
+WALLET|1|Money holder|Crypto storage
+BACKPACK|1|School bag|Hiking gear carrier
+SCISSORS|1|Cutting tool with two blades|Rock-paper-___
+NEEDLE|1|Sewing tool|Tease
+THREAD|1|Sewing string|Online discussion chain
+BUTTON|1|Shirt fastener|Cute as a ___
+ZIPPER|1|Jacket fastener|Fly
+TOWEL|1|Beach or bath cloth|Throw in the ___
+BROOM|1|Sweeping tool|Witch's ride
+SPONGE|1|Kitchen scrubber|Freeloader
+KETTLE|2|Whistling pot|Pot calls it black
+TEAPOT|2|Short and stout vessel|Tempest site
+SKILLET|2|Frying pan|Cast-iron cookware
+BLENDER|2|Smoothie maker|Mixer
+TOASTER|2|Bread browner|Pop-up appliance
+FRIDGE|1|Cold kitchen box|Magnet display
+OVEN|1|Baking box|Bun holder, idiomatically
+SPOON|1|Soup utensil|Cuddle
+FORK|1|Tined utensil|Road split
+KNIFE|1|Cutting utensil|Butter spreader
+PLATE|1|Dinner dish|Home ___
+CUP|1|Mug|World ___
+GLASS|1|Drinking vessel|Half full or empty
+LANTERN|2|Portable light|Jack-o'-___
+TELESCOPE|2|Stargazer's tool|Collapse, in a way
+MICROSCOPE|3|Lab magnifier|Scrutiny
+BINOCULARS|3|Birder's gear|Field glasses
+TROWEL|3|Small gardening tool|Mason's spreader
+HOURGLASS|3|Sand timer|Figure with a narrow waist
+
+# ---- Fantasy & adventure ----
+DRAGON|1|Fire-breathing beast|Wyrm
+WIZARD|1|Spellcaster with a staff|Whiz
+KNIGHT|1|Armored warrior|Chess piece that jumps
+KING|1|Crowned ruler|Checkmate target
+QUEEN|1|Royal consort|Most powerful chess piece
+PRINCE|1|Royal son|Machiavelli treatise
+MAGIC|1|Sorcery|Illusion
+SPELL|1|Incantation|Period of time
+GHOST|1|Spooky apparition|Stop replying suddenly
+ZOMBIE|1|Walking dead|Mindless drone
+ROBOT|1|Mechanical helper|Automaton
+PIRATE|1|Buccaneer|Illegally copy
+NINJA|1|Stealthy warrior|Expert, informally
+HERO|1|Main protagonist|Sub sandwich
+QUEST|1|Adventurer's mission|Search
+LEGEND|1|Myth|Map key
+MYSTERY|1|Whodunit|Enigma
+SECRET|1|Something hidden|Classified
+TREASURE|1|Pirate's loot|Cherish
+UNICORN|1|Horned horse of myth|Startup worth a billion
+GOBLIN|2|Mischievous creature|Hobgoblin kin
+TROLL|1|Bridge-dwelling brute|Online provocateur
+ELF|1|Santa's helper|Pointy-eared folk
+FAIRY|1|Winged sprite|Tooth ___
+GIANT|1|Beanstalk dweller|Huge
+PHOENIX|2|Bird reborn from ashes|Arizona capital
+GRIFFIN|3|Eagle-lion hybrid|Heraldic beast
+MERMAID|1|Half-fish sea maiden|Ariel, for one
+VAMPIRE|1|Bloodsucker of legend|Dracula
+WEREWOLF|2|Full-moon changer|Lycanthrope
+WITCH|1|Broom rider|Hunt target
+CURSE|1|Hex|Swear
+SCROLL|2|Rolled parchment|Move down a page
+AMULET|2|Protective charm|Talisman
+RUNE|2|Ancient carved letter|Norse glyph
+OGRE|2|Fairy-tale brute|Brutish boss
+SORCERER|2|Magic user|Mage
+ORACLE|3|Prophet of Delphi|Seer
+LABYRINTH|3|Minotaur's maze|Tangle
+CHALICE|3|Ornate cup|Holy Grail, e.g.
+TALISMAN|3|Lucky charm|Amulet
+PALADIN|3|Holy knight|Champion of a cause
+
+# ---- Games & puzzles ----
+LEVEL|1|Stage in a video game|Even
+BOSS|1|Final enemy of a stage|Manager
+PUZZLE|1|Brain teaser|Perplex
+RIDDLE|1|Question with a clever answer|Pierce with holes
+GAME|1|Something you play|Willing
+SCORE|1|Points tally|Twenty
+PLAYER|1|One in the game|Record ___
+DICE|1|Cubes rolled in board games|Chop finely
+CARD|1|Ace or king|Joker
+CHESS|1|Game with checkmate|Kasparov's game
+TOKEN|1|Game piece|Symbol
+RANDOM|1|Unpredictable|Arbitrary
+WORLD|1|Planet Earth|Everything
+ITEM|1|Thing in an inventory|Couple, romantically
+CHECK|1|Location that sends an item|Bill at a restaurant
+CLUE|1|Hint in a crossword|Mystery board game
+ANSWER|1|Solution|Respond
+WORD|1|What crossword answers are|Promise
+LETTER|1|A, B or C|Mail piece
+BINGO|1|Game with called numbers|Exactly!
+DOMINO|2|Tile with pips|___ effect
+MARBLE|2|Glass ball in a game|Statue stone
+KITE|1|Flyer on a string|Bad check
+YOYO|1|Toy on a string|Up-and-down thing
+JIGSAW|2|Interlocking puzzle|Saw with a narrow blade
+CHECKERS|2|Game with kings and jumps|Draughts
+MAHJONG|3|Tile game of Chinese origin|Tile-matching pastime
+SUDOKU|2|Number-grid puzzle|Nine-by-nine logic grid
+ANAGRAM|2|Rearranged word|"Listen" for "silent"
+REBUS|3|Picture puzzle|Word-picture riddle
+PALINDROME|3|Word like "racecar"|Reads the same both ways
+
+# ---- Music & arts ----
+GUITAR|1|Six-stringed instrument|Air ___
+PIANO|1|Instrument with 88 keys|Softly, in music
+DRUM|1|Percussion instrument|___ up business
+VIOLIN|1|Fiddle|Stradivarius
+FLUTE|1|Woodwind instrument|Champagne glass
+TRUMPET|1|Brass instrument|Proclaim loudly
+SONG|1|Tune with lyrics|Bargain price
+MUSIC|1|Melody and harmony|Face the ___
+RADIO|1|FM or AM device|Walkie-talkie
+MOVIE|1|Film|Picture
+CAMERA|1|Photo taker|Lens holder
+PHOTO|1|Snapshot|___ finish
+PAINT|1|Artist's medium|Depict
+BRUSH|1|Painter's tool|Close call, with death
+PENCIL|1|Writing tool with an eraser|Schedule tentatively
+PAPER|1|Sheet for writing|Essay
+BOOK|1|Novel|Reserve
+NOVEL|1|Long work of fiction|New
+POEM|1|Verse|Ode or sonnet
+STORY|1|Tale|Building floor
+ARTIST|1|Painter or sculptor|Con ___
+BALLET|2|Dance in tutus|Swan Lake form
+OPERA|2|Sung drama|Soap ___
+SYMPHONY|2|Orchestral work|Harmony
+ORCHESTRA|2|Group led by a conductor|Pit group
+CHOIR|2|Singing group|Preach to it
+BANJO|2|Bluegrass instrument|Plucked twanger
+HARP|2|Angelic instrument|Dwell, with "on"
+CELLO|2|Big string instrument played seated|Yo-Yo Ma's instrument
+TUBA|2|Big brass instrument|Oom-pah horn
+SAXOPHONE|2|Jazz reed instrument|Sax
+ACCORDION|3|Squeezebox|Folding bellows instrument
+UKULELE|2|Small four-stringed instrument|Hawaiian strummer
+MELODY|2|Tune|Air
+RHYTHM|2|Beat|Cadence
+LYRICS|2|Song words|Libretto, in pop
+CANVAS|2|Painter's surface|Survey voters
+SCULPTURE|2|Statue art|Chiseled work
+PORTRAIT|2|Painted likeness|Page orientation
+MUSEUM|1|Place with exhibits|Louvre, e.g.
+GALLERY|2|Art display space|Peanut ___
+THEATER|1|Place for plays|Arena of war
+COMEDY|1|Funny genre|Dante's Divine one
+TRAGEDY|2|Sad drama|Hamlet, for one
+SONNET|3|Fourteen-line poem|Shakespearean verse
+HAIKU|2|Three-line Japanese poem|Five-seven-five verse
+EPIC|2|Long heroic poem|Legendary
+FRESCO|3|Wet plaster painting|Sistine technique
+MOSAIC|3|Art made of tiles|Patchwork
+OVERTURE|3|Opera opener|Opening offer
+CRESCENDO|3|Gradual loudening|Climax
+TEMPO|2|Musical speed|Pace
+VERSE|1|Song section|Well-versed
+CHORUS|2|Song's refrain|Greek drama group
+
+# ---- People & places ----
+SCHOOL|1|Place for learning|Group of fish
+TEACHER|1|Classroom instructor|Mentor
+STUDENT|1|Pupil|Learner
+DOCTOR|1|Physician|Tamper with
+NURSE|1|Hospital caregiver|Hold a grudge
+CHEF|1|Kitchen boss|Culinary pro
+FARMER|1|Crop grower|Agriculturist
+PILOT|1|Plane flyer|TV test episode
+SAILOR|1|Seafarer|Salt
+BAKER|1|Bread maker|___'s dozen
+FRIEND|1|Pal|Add on social media
+FAMILY|1|Relatives|Kin
+MOTHER|1|Mom|___ of invention
+FATHER|1|Dad|Beget
+SISTER|1|Female sibling|Nun
+BROTHER|1|Male sibling|Monk
+BABY|1|Infant|Coddle
+TRAIN|1|Vehicle on rails|Coach
+PLANE|1|Aircraft|Flat surface
+BOAT|1|Watercraft|Rock the ___
+SHIP|1|Large vessel|Send
+TRUCK|1|Big rig|Have no ___ with
+BIKE|1|Two-wheeler|Pedal pusher
+CAR|1|Automobile|Train section
+BUS|1|Public transit vehicle|Clear dishes
+TAXI|1|Yellow cab|Move on a runway
+ROAD|1|Street|___ trip
+CITY|1|Large town|Metropolis
+TOWN|1|Small city|Paint it red
+VILLAGE|1|Tiny town|It takes one, per proverb
+MARKET|1|Place to shop|Advertise
+PARK|1|Green space in a city|Leave the car
+LIBRARY|1|Book lender|Code collection
+HOTEL|1|Place to stay overnight|H in the NATO alphabet
+AIRPORT|1|Place for flights|Terminal site
+HARBOR|2|Port for ships|Shelter
+PALACE|2|Royal residence|Buckingham, e.g.
+TEMPLE|2|Place of worship|Side of the head
+BAKERY|1|Bread shop|Patisserie
+CIRCUS|1|Big-top show|Chaotic scene
+CARNIVAL|2|Fair with rides|Mardi Gras festivity
+LIGHTHOUSE|2|Coastal beacon|Keeper's tower
+DETECTIVE|2|Case solver|Sleuth
+ASTRONAUT|2|Space traveler|Cosmonaut's counterpart
+EXPLORER|2|Adventurer|Web browser, once
+INVENTOR|2|Patent holder|Edison, famously
+SCIENTIST|2|Lab worker|Researcher
+MAGICIAN|1|Rabbit puller|Illusionist
+ARCHITECT|3|Building designer|Mastermind
+JOURNALIST|3|Reporter|Newshound
+LIBRARIAN|3|Book lender, in person|Shusher
+NEIGHBOR|2|Person next door|Adjoin
+STRANGER|2|Unknown person|Odder
+
+# ---- Sports & activities (light) ----
+GOLF|1|Sport with a hole in one|Links game
+TENNIS|1|Sport with a love score|Court game
+SOCCER|1|Football to most of the world|The beautiful game
+HOCKEY|1|Sport played on ice with a puck|Field or ice game
+BASEBALL|1|Sport with a diamond|Pastime
+SKATE|1|Glide on ice|Get off lightly
+SWIM|1|Do laps in a pool|Head spin
+RACE|1|Contest of speed|Rat ___
+MEDAL|1|Olympic prize|Gold, silver or bronze
+TROPHY|1|Championship cup|___ wife
+TEAM|1|Squad|No I in it
+COACH|1|Team leader|Economy class
+HIKE|1|Trail walk|Price increase
+CAMP|1|Tent site|Kitsch
+FISH|1|Cast a line|Angle for compliments
+YOGA|1|Stretching practice|Downward dog activity
+KARATE|1|Martial art with belts|Empty hand art
+BOWLING|1|Ten-pin game|Strike and spare sport
+PICNIC|1|Outdoor meal|Easy task
+
+# ---- Colors ----
+RED|1|Color of a stop sign|In the ___ (owing money)
+BLUE|1|Color of the sky|Sad
+GREEN|1|Color of grass|Inexperienced
+YELLOW|1|Color of a banana|Cowardly
+PURPLE|1|Color of royalty|___ prose
+ORANGE|1|Color and a fruit|Hard word to rhyme
+BLACK|1|Color of night|In the ___ (profitable)
+WHITE|1|Color of snow|Pale
+PINK|1|Color of flamingos|In the ___ (healthy)
+BROWN|1|Color of chocolate|Sear
+GRAY|1|Mix of black and white|Ambiguous area
+TEAL|2|Blue-green color|Duck with a colorful wing
+VIOLET|2|Purple flower|Shrinking one
+MAROON|2|Dark red|Strand on an island
+CRIMSON|2|Deep red|Harvard color
+INDIGO|2|Color between blue and violet|Dye plant
+MAGENTA|3|Purplish-red printer ink|CMYK M
+TURQUOISE|3|Blue-green gem|Southwestern stone
+BEIGE|2|Tan shade|Bland
+SCARLET|2|Bright red|Letter on Hester's dress
+LAVENDER|2|Pale purple|Fragrant herb
+AMBER|2|Honey-colored resin|Traffic light middle
+
+# ---- Feelings & descriptions ----
+HAPPY|1|Joyful|Glad
+SAD|1|Unhappy|Pitiful
+BRAVE|1|Courageous|Face
+CALM|1|Peaceful|Soothe
+QUICK|1|Fast|Heart of the matter
+SLOW|1|Not fast|Dim
+BIG|1|Large|Important
+SMALL|1|Little|___ talk
+HOT|1|Scorching|Stolen
+COLD|1|Chilly|Unfriendly
+OLD|1|Aged|Former
+NEW|1|Brand-new|Novel
+BRIGHT|1|Shining|Smart
+DARK|1|Without light|Gloomy
+LOUD|1|Noisy|Garish
+QUIET|1|Hushed|Silence
+SMART|1|Clever|Sting
+FUNNY|1|Humorous|Odd
+ANGRY|1|Mad|Irate
+TIRED|1|Sleepy|Cliched
+GENTLE|1|Kind and soft|Mild
+CLEVER|1|Smart|Witty
+PROUD|1|Pleased with oneself|Haughty
+LUCKY|1|Fortunate|Charmed
+SILLY|1|Goofy|Foolish
+SHY|1|Bashful|Short of
+CURIOUS|2|Eager to know|Odd
+GRUMPY|2|Cranky|One of seven dwarfs
+JOLLY|2|Cheerful|Roger on a pirate flag
+NERVOUS|2|Jittery|On edge
+FIERCE|2|Ferocious|Intense
+HUMBLE|2|Modest|Lowly
+GENEROUS|2|Giving|Ample
+PATIENT|2|Tolerant of waiting|Doctor's charge
+ANCIENT|2|Very old|Antique
+GIGANTIC|2|Huge|Colossal
+TINY|1|Very small|Minute
+FRAGILE|2|Easily broken|Handle with care
+SHINY|1|Gleaming|Polished
+FUZZY|1|Covered in fluff|Blurry
+BOLD|1|Daring|Heavy type
+WISE|1|Sage|Smart aleck, with "guy"
+
+# ---- Time & events ----
+SPRING|1|Season of blooms|Coil
+SUMMER|1|Warmest season|Vacation season
+AUTUMN|1|Fall|Later years of life
+WINTER|1|Coldest season|Stark
+MONDAY|1|Start of the work week|Moon's day
+FRIDAY|1|Last day of the work week|Robinson Crusoe's companion
+MORNING|1|Early part of the day|AM
+NIGHT|1|Time for sleeping|Knight's homophone
+NOON|1|Midday|High ___
+MIDNIGHT|1|Twelve o'clock at night|Witching hour
+HOUR|1|Sixty minutes|Rush ___
+MINUTE|1|Sixty seconds|Tiny
+YEAR|1|Twelve months|Annum
+WEEK|1|Seven days|Sennight
+BIRTHDAY|1|Annual celebration of your birth|Suit, jokingly
+HOLIDAY|1|Day off to celebrate|Vacation, in Britain
+PARTY|1|Celebration with guests|Political group
+GIFT|1|Present|Talent
+BALLOON|1|Party decoration full of air|Swell
+CALENDAR|2|Date grid|Schedule
+DECADE|2|Ten years|Decennium
+CENTURY|2|Hundred years|Cricket hundred
+FESTIVAL|2|Celebration event|Fete
+PARADE|1|Street procession|Flaunt
+WEDDING|1|Marriage ceremony|Nuptials
+VACATION|1|Trip away from work|Getaway
+
+# ---- Actions ----
+DREAM|1|Sleeping vision|Aspiration
+SLEEP|1|Nightly rest|Z's
+DANCE|1|Move to music|Sidestep
+SING|1|Carry a tune|Rat out
+JUMP|1|Leap|Start
+RUN|1|Sprint|Operate
+WALK|1|Stroll|Base on balls
+READ|1|Look at a book|Interpret
+WRITE|1|Put pen to paper|Compose
+COOK|1|Prepare food|Falsify, as books
+PLANT|1|Put in the ground|Factory
+BUILD|1|Construct|Physique
+OPEN|1|Unlock|Candid
+CLOSE|1|Shut|Near
+SEARCH|1|Look for|Frisk
+FIND|1|Discover|Bargain
+LOST|1|Missing|Confused
+FOUND|1|Discovered|Establish
+SMILE|1|Happy expression|Grin
+LAUGH|1|Chuckle|Riot
+WHISPER|2|Speak softly|Rumor
+CLIMB|1|Go up|Scale
+EXPLORE|2|Travel to discover|Probe
+WANDER|2|Roam|Stray
+WONDER|1|Marvel|Ponder
+GATHER|2|Collect|Infer
+SHUFFLE|2|Mix a deck|Drag one's feet
+UNLOCK|1|Open with a key|Reveal
+ESCAPE|1|Get away|Keyboard key
+SOLVE|1|Figure out|Crack
+
+# ---- Body ----
+HEART|1|Organ that pumps blood|Core
+BRAIN|1|Organ for thinking|Genius
+HAND|1|Part with five fingers|Help
+FOOT|1|Part with five toes|Twelve inches
+NOSE|1|Organ for smelling|Snoop, with "around"
+EAR|1|Organ for hearing|Corn unit
+EYE|1|Organ for seeing|Watch
+ELBOW|1|Arm joint|Nudge
+KNEE|1|Leg joint|Patella site
+SHOULDER|1|Arm socket area|Cold ___
+THUMB|1|Opposable digit|Hitchhiker's signal
+TONGUE|1|Taste organ|Language
+SKELETON|2|Bony framework|Closet secret
+
+# ---- Harder vocabulary ----
+ARCANE|3|Mysterious and obscure|Understood by few
+BANAL|3|Unoriginal|Trite
+CANDOR|3|Frankness|Openness
+DEARTH|3|Scarcity|Lack
+ENIGMA|3|Puzzle|Riddle wrapped in a mystery
+FERVOR|3|Intense passion|Zeal
+GAMBIT|3|Opening chess sacrifice|Calculated risk
+HUBRIS|3|Excessive pride|Icarus's flaw
+IRONY|3|Opposite of what's expected|Rain on your wedding day, per a song
+JOVIAL|3|Good-humored|Jolly
+KUDOS|3|Praise|Props
+LUCID|3|Clear-headed|Clear, as a dream
+MOROSE|3|Gloomy|Sullen
+NADIR|3|Lowest point|Rock bottom
+OPAQUE|3|Not see-through|Hard to understand
+PARIAH|3|Outcast|Persona non grata
+QUAINT|3|Charmingly old-fashioned|Picturesque
+RAPPORT|3|Harmonious relationship|Connection
+TACIT|3|Unspoken|Implied
+VERBOSE|3|Wordy|Prolix
+ZENITH|3|Highest point|Apex
+ZEAL|3|Enthusiasm|Fervor
+EPOCH|3|Era|Age
+FATHOM|3|Understand|Six feet of depth
+GALLANT|3|Chivalrous|Brave
+HAVEN|3|Safe place|Refuge
+IDYLL|3|Peaceful scene|Pastoral poem
+JEST|3|Joke|Quip
+KINDLE|3|Set alight|E-reader
+LANGUID|3|Lacking energy|Listless
+MIRTH|3|Laughter|Glee
+OMEN|3|Sign of the future|Portent
+PALTRY|3|Meager|Measly
+QUELL|3|Suppress|Put down
+REVERIE|3|Daydream|Musing
+SOLACE|3|Comfort|Consolation
+UNCANNY|3|Eerily strange|___ valley
+VALOR|3|Bravery|Courage
+WISTFUL|3|Longingly thoughtful|Yearning
+YEARN|3|Long for|Pine
+AMBLE|3|Stroll|Saunter
+BLITHE|3|Carefree|Casual
+CAJOLE|3|Coax|Sweet-talk
+DAUNT|3|Intimidate|Dishearten
+ELUDE|3|Evade|Escape
+FEIGN|3|Pretend|Fake
+GLEAN|3|Gather bit by bit|Pick up
+HAUGHTY|3|Arrogant|Snooty
+IMPEDE|3|Hinder|Obstruct
+JARGON|3|Specialized lingo|Buzzwords
+KNACK|3|Talent|Flair
+LAMENT|3|Mourn|Dirge
+MEANDER|3|Wind aimlessly|Wander
+NIMBLE|3|Agile|Quick-footed
+OBTUSE|3|Slow to understand|Greater than 90 degrees
+PLACID|3|Tranquil|Calm
+QUAFF|3|Drink heartily|Guzzle
+RELISH|3|Enjoy greatly|Hot dog topping
+SCOFF|3|Mock|Jeer
+TEPID|3|Lukewarm|Halfhearted
+UTOPIA|3|Perfect society|Ideal place
+VEX|3|Annoy|Irk
+WHIM|3|Sudden fancy|Caprice
+ZEPHYR|3|Gentle breeze|West wind
+BOLSTER|3|Support|Long pillow
+CRYPTIC|3|Mysterious|Puzzling, like some clues
+DOCILE|3|Easily managed|Tame
+FRUGAL|3|Thrifty|Economical
+GUSTO|3|Enthusiasm|Relish
+INERT|3|Motionless|Chemically inactive
+LAVISH|3|Extravagant|Heap
+NUANCE|3|Subtle difference|Shade of meaning
+PARODY|3|Humorous imitation|Spoof
+QUIRK|3|Odd habit|Idiosyncrasy
+RUSTIC|3|Rural|Countrified
+SERENE|3|Calm|Peaceful
+VIVID|3|Bright and lively|Graphic
+ZEALOT|3|Fanatic|Extremist
+EPHEMERAL|3|Short-lived|Fleeting
+LETHARGY|3|Sluggishness|Torpor
+MINUTIAE|3|Tiny details|Trivia
+OBSCURE|3|Little-known|Hide
+PRAGMATIC|3|Practical|Realistic
+RESILIENT|3|Bouncing back|Tough
+
+TENACIOUS|3|Persistent|Dogged
+VORACIOUS|3|Very hungry|Insatiable
+WHIMSICAL|3|Playfully quaint|Fanciful
