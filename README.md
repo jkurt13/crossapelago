@@ -3,7 +3,7 @@
 A crossword you play in the browser as part of an [Archipelago](https://archipelago.gg) multiworld.
 Other players send you letter keys and clues; solving words sends out checks.
 
-**Play:** https://jkurt13.github.io/crossword-randomizer/ (once GitHub Pages is on — see below)
+**Play:** https://jkurt13.github.io/Crossword-Archipelago/ (once GitHub Pages is on — see below)
 
 ## Files
 - `index.html` — the web client (this is what GitHub Pages serves).
