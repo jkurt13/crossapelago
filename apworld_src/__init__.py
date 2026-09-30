@@ -9,7 +9,7 @@ from .generator import ACROSS, Placed, generate
 from .options import CrosswordOptions, Difficulty, PuzzleSize, SquareChecks, StartingLetters
 from .wordlist import Entry, load_pack
 
-GAME = "Crossword Randomizer"
+GAME = "Crossapelago"
 BASE_ID = 7_654_300_000
 MAX_NUMBER = 150
 
@@ -104,7 +104,7 @@ class CrosswordWeb(WebWorld):
     theme = "partyTime"
     tutorials = [Tutorial(
         "Multiworld Setup Guide",
-        "How to set up and play Crossword Randomizer.",
+        "How to set up and play Crossapelago.",
         "English",
         "setup_en.md",
         "setup/en",

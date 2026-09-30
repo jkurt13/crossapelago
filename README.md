@@ -1,30 +1,30 @@
-# Crossword Randomizer for Archipelago — v0.6.0
+# Crossapelago — a crossword for Archipelago — v0.7.0
 
 A crossword you play in the browser as part of an [Archipelago](https://archipelago.gg) multiworld.
 Other players send you letter keys and clues; solving words sends out checks.
 
-**Play:** https://jkurt13.github.io/crossword-randomizer/ (once GitHub Pages is on — see below)
+**Play:** https://jkurt13.github.io/crossapelago/
 
 ## Files
 - `index.html` — the web client (this is what GitHub Pages serves).
-- `crossword_randomizer.apworld` — drop into your Archipelago `custom_worlds` folder.
-- `Crossword Randomizer.yaml` — options template.
+- `crossapelago.apworld` — drop into your Archipelago `custom_worlds` folder.
+- `Crossapelago.yaml` — options template.
 - `apworld_src/` — source of the apworld (word packs in `apworld_src/words/`).
 - `client/` — source of the web client. After editing `client/index.template.html`, run `python client/build_client.py` to rebuild `index.html`.
 
 ## Publish on GitHub Pages (one-time)
-1. On github.com, create a new **public** repository named `crossword-randomizer`. Don't add a README; this folder has one.
+1. On github.com, create a new **public** repository named `crossapelago`. Don't add a README; this folder has one.
 2. Upload this folder's contents to the repo, either way:
    - **Web:** on the new repo's page, click "uploading an existing file", drag in everything from this folder (including `.nojekyll`), and commit.
    - **GitHub Desktop:** File → Add local repository → pick this folder → "create a repository" → Publish, un-ticking "Keep this code private".
 3. In the repo, go to **Settings → Pages**. Under "Build and deployment", pick **Deploy from a branch**, branch **main**, folder **/ (root)**, then Save.
-4. After a minute or two the site is live at `https://jkurt13.github.io/crossword-randomizer/`.
+4. After a minute or two the site is live at `https://jkurt13.github.io/crossapelago/`.
 
 To update the site later, upload the changed files again (or commit and push in GitHub Desktop). Pages redeploys on its own.
 
 ### Sharing with friends
 - **Copy link** in the page header copies a link with the server and slot filled in. The password is never included.
-- You can also build links by hand: `https://jkurt13.github.io/crossword-randomizer/?server=archipelago.gg:38281&slot=Jacob`.
+- You can also build links by hand: `https://jkurt13.github.io/crossapelago/?server=archipelago.gg:38281&slot=Jacob`.
 - The hosted page can reach **archipelago.gg** rooms and **servers on your own computer** (`localhost`).
 - Browsers block an https page from reaching a server on another machine on your LAN (e.g. `192.168.x.x`). For that, download `index.html` and open the file directly.
 
@@ -38,8 +38,8 @@ To update the site later, upload the changed files again (or commit and push in 
 
 ```yaml
 name: YourName
-game: Crossword Randomizer
-Crossword Randomizer:
+game: Crossapelago
+Crossapelago:
   themes: [General]           # any of: General, Gaming, Movies, Sports
   difficulty: medium          # easy | medium | hard
   puzzle_size: medium         # small (15 words) | medium (25) | large (40) | huge (60) | custom
@@ -116,6 +116,16 @@ Crossword Randomizer:
   - From an `https://` page it uses `wss://`, plus `ws://` for `localhost` / `127.0.0.1`, which browsers allow.
   - When opened as a local file it also tries `ws://` for LAN addresses.
 
+## v0.7.0 — renamed to Crossapelago
+- The game name is now `Crossapelago`, used in YAMLs as `game: Crossapelago`. The apworld is `crossapelago.apworld`.
+- The site is at `jkurt13.github.io/crossapelago/`.
+- Item and location names and IDs are unchanged. Seeds made with the old name need the old apworld.
+- **Tested:**
+  - AP general tests plus 53 world tests pass.
+  - Built with AP's builder, the manifest reads Crossapelago v0.7.0.
+  - The packaged file generated alongside Hollow Knight.
+  - The renamed page connected and solved a word, and that sent an item to the Hollow Knight player.
+
 ## Tested (v0.6.0 — DeathLink, reconnect)
 - **Two-player room (Alice + Bob, both DeathLink, amnesty 1):**
   - Alice's 1st wrong word was free; her 2nd sent a death.
@@ -164,7 +174,7 @@ Crossword Randomizer:
 - **Full playthrough:** Gaming + Sports, hard, large, every 3rd square — 40 words, 66 squares, 4 milestones and the goal all registered on a real MultiServer.
 
 ## Tested (v0.3.0)
-- **Option tests:** `worlds/crossword_randomizer/test/test_options.py` covers default, every_square, every_nth, a harsh solo setup, and 60 words with every_square. It runs AP's standard world checks on each: 23 tests, all pass.
+- **Option tests:** `worlds/crossapelago/test/test_options.py` covers default, every_square, every_nth, a harsh solo setup, and 60 words with every_square. It runs AP's standard world checks on each: 23 tests, all pass.
 - **Generation:**
   - Every square-check setting passes solo, including harsh starts that used to fail.
   - every_square + Hollow Knight: all passed.

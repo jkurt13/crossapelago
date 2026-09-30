@@ -5,7 +5,7 @@ import pkgutil
 
 
 class CrosswordTestBase(WorldTestBase):
-    game = "Crossword Randomizer"
+    game = "Crossapelago"
 
 
 class TestDefault(CrosswordTestBase):
@@ -16,7 +16,7 @@ class TestDefault(CrosswordTestBase):
 class TestWordPacks(CrosswordTestBase):
     def test_packs_are_clean(self) -> None:
         for pack in PACKS:
-            text = pkgutil.get_data("worlds.crossword_randomizer", f"words/{pack}.txt").decode("utf-8")
+            text = pkgutil.get_data("worlds.crossapelago", f"words/{pack}.txt").decode("utf-8")
             entries, problems = parse_pack(pack, text)
             self.assertEqual(problems, [], pack)
             self.assertGreater(len(entries), 150, pack)

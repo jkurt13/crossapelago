@@ -1,6 +1,6 @@
 {
-  "game": "Crossword Randomizer",
+  "game": "Crossapelago",
   "minimum_ap_version": "0.6.4",
-  "world_version": "0.6.0",
+  "world_version": "0.7.0",
   "authors": ["jkurt13"]
 }

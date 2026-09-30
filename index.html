@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Crossword Randomizer</title>
-<meta name="description" content="Web client for the Crossword Randomizer Archipelago game: solve a crossword while other players send you letters and clues.">
+<title>Crossapelago</title>
+<meta name="description" content="Web client for Crossapelago, a crossword game for Archipelago: solve a crossword while other players send you letters and clues.">
 <meta name="theme-color" content="#3a6ff7">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Crect width='30' height='30' rx='5' fill='%232a2a2e'/%3E%3Crect x='3' y='3' width='11' height='11' fill='%23fff'/%3E%3Crect x='16' y='3' width='11' height='11' fill='%23ffd84d'/%3E%3Crect x='3' y='16' width='11' height='11' fill='%23fff'/%3E%3C/svg%3E">
 <style>
@@ -95,7 +95,7 @@ main { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 16px; pa
 </head>
 <body>
 <header>
-  <h1>Crossword Randomizer</h1>
+  <h1>Crossapelago</h1>
   <input id="server" placeholder="archipelago.gg:38281" autocomplete="off">
   <input id="slot" placeholder="Slot name" autocomplete="off">
   <input id="password" placeholder="Password" type="password" autocomplete="off">
@@ -113,8 +113,8 @@ main { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 16px; pa
       <h2>Solve a crossword inside your Archipelago multiworld</h2>
       <p>Clues and letter keys are scattered across everyone's games. Solving words sends out checks.</p>
       <ol>
-        <li>Download <a href="crossword_randomizer.apworld" download>crossword_randomizer.apworld</a> and put it in your Archipelago <code>custom_worlds</code> folder.</li>
-        <li>Grab the <a href="Crossword%20Randomizer.yaml" download>YAML template</a>, set your name and options, and generate as usual.</li>
+        <li>Download <a href="crossapelago.apworld" download>crossapelago.apworld</a> and put it in your Archipelago <code>custom_worlds</code> folder.</li>
+        <li>Grab the <a href="Crossapelago.yaml" download>YAML template</a>, set your name and options, and generate as usual.</li>
         <li>Enter the server address and your slot name above, then press <b>Connect</b>.</li>
       </ol>
       <p>Just want to try it? Press <b>Demo</b> for a small offline puzzle.</p>
@@ -134,7 +134,7 @@ main { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 16px; pa
 </main>
 <script>
 "use strict";
-const GAME = "Crossword Randomizer";
+const GAME = "Crossapelago";
 const DEMO = {"version":1,"id_base":7654300000,"require_clues":true,"width":19,"height":12,"words":[{"number":1,"direction":"across","row":0,"col":11,"answer":"SILVER","clue":"Second-place medal metal"},{"number":4,"direction":"across","row":3,"col":9,"answer":"FROG","clue":"Hopping amphibian"},{"number":5,"direction":"across","row":4,"col":14,"answer":"STORM","clue":"Thunder and lightning event"},{"number":6,"direction":"across","row":5,"col":5,"answer":"BASEBALL","clue":"Sport with a diamond"},{"number":8,"direction":"across","row":7,"col":12,"answer":"BIKE","clue":"Two-wheeler"},{"number":9,"direction":"across","row":8,"col":4,"answer":"FOREST","clue":"Area thick with trees"},{"number":12,"direction":"across","row":10,"col":0,"answer":"COOKIE","clue":"Chocolate chip treat"},{"number":13,"direction":"across","row":10,"col":7,"answer":"MOON","clue":"Earth's satellite"},{"number":1,"direction":"down","row":0,"col":11,"answer":"SCHOOL","clue":"Place for learning"},{"number":2,"direction":"down","row":0,"col":16,"answer":"RADIO","clue":"FM or AM device"},{"number":3,"direction":"down","row":3,"col":6,"answer":"PLAYER","clue":"One in the game"},{"number":7,"direction":"down","row":5,"col":12,"answer":"LIBRARY","clue":"Book lender"},{"number":10,"direction":"down","row":8,"col":5,"answer":"OPEN","clue":"Unlock"},{"number":11,"direction":"down","row":8,"col":8,"answer":"SNOW","clue":"Winter flakes"}]};
 const $ = (id) => document.getElementById(id);
 const store = {
