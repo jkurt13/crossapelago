@@ -81,3 +81,31 @@ class TestMixedThemes(CrosswordTestBase):
         answers = {w.answer for w in self.world.words}
         for pack in ("gaming", "movies", "sports"):
             self.assertTrue(answers & {e.answer for e in load_pack(pack)}, pack)
+
+
+class TestTraps(CrosswordTestBase):
+    options = {"square_checks": "every_nth", "trap_chance": 100, "trap_types": ["Scramble", "Blackout"]}
+
+    def test_only_chosen_traps(self) -> None:
+        names = [i.name for i in self.multiworld.itempool if i.player == self.player]
+        traps = [n for n in names if n.endswith(" Trap")]
+        self.assertTrue(traps)
+        self.assertEqual(set(traps), {"Scramble Trap", "Blackout Trap"})
+        self.assertNotIn("Reveal Square", names)
+        self.assertNotIn("Coffee Break", names)
+
+
+class TestTrapsOffByDefault(CrosswordTestBase):
+    options = {"square_checks": "every_nth"}
+
+    def test_no_traps(self) -> None:
+        self.assertFalse([i for i in self.multiworld.itempool if i.name.endswith(" Trap")])
+
+
+class TestDeathLinkSlotData(CrosswordTestBase):
+    options = {"death_link": True, "death_link_amnesty": 4}
+
+    def test_slot_data(self) -> None:
+        data = self.world.fill_slot_data()
+        self.assertTrue(data["death_link"])
+        self.assertEqual(data["death_link_amnesty"], 4)

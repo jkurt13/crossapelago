@@ -47,6 +47,19 @@ main { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 16px; pa
 .cell.wrong .ch { color: var(--bad); }
 .cell.wrong::after { content: ""; position: absolute; left: 12%; right: 12%; top: 50%; border-top: 2px solid var(--bad); transform: rotate(-35deg); }
 #tools[hidden] { display: none; }
+#banner { position: fixed; top: 70px; left: 50%; transform: translateX(-50%) translateY(-10px); max-width: calc(100% - 32px);
+  background: var(--bad); color: #fff; padding: 10px 16px; border-radius: 8px; font-weight: 600; z-index: 10;
+  box-shadow: 0 4px 18px rgba(0,0,0,.25); opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s; }
+#banner.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+#effects { display: flex; flex-wrap: wrap; gap: 8px; margin: -4px 0 10px; }
+#effects:empty { display: none; }
+#effects span { font-size: 13px; font-weight: 600; color: var(--bad); border: 1px solid var(--bad); border-radius: 999px; padding: 2px 10px; }
+#effects span.paused { color: var(--muted); border-color: var(--line); font-weight: 400; }
+#keys button.stuck { color: var(--bad); border-color: var(--bad); text-decoration: line-through; background: transparent; }
+.clues li.blackout span { color: var(--locked); letter-spacing: .1em; }
+.grid-shake { animation: shake .4s; }
+@keyframes shake { 20%, 60% { transform: translateX(-6px); } 40%, 80% { transform: translateX(6px); } }
+@media (prefers-reduced-motion: reduce) { .grid-shake { animation: none; } #banner { transition: none; } }
 #tools { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
 #tools button:disabled { opacity: .45; cursor: default; }
 #tools .hint { font-size: 12px; color: var(--muted); align-self: center; }
@@ -91,9 +104,11 @@ main { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 16px; pa
   <button id="shareBtn" title="Copy a link with the server and slot filled in">Copy link</button>
   <span id="status">Not connected</span>
 </header>
+<div id="banner" role="status" aria-live="assertive"></div>
 <main>
   <section class="card">
     <div id="current"></div>
+    <div id="effects" aria-live="polite"></div>
     <div id="gridwrap"><div id="grid"><div class="intro">
       <h2>Solve a crossword inside your Archipelago multiworld</h2>
       <p>Clues and letter keys are scattered across everyone's games. Solving words sends out checks.</p>
@@ -130,7 +145,7 @@ const store = {
 // ---------------- state ----------------
 let S = null;          // puzzle state
 let ws = null, demo = false;
-let conn = { slot: 0, team: 0, players: {}, slotInfo: {}, seed: "", dp: {} };
+let conn = { slot: 0, team: 0, players: {}, slotInfo: {}, seed: "", dp: {}, retries: 0, keepAlive: false };
 
 function idsFor(base) {
   return {
@@ -144,11 +159,13 @@ function idsFor(base) {
   };
 }
 
+const TRAP_NAMES = ["Scramble Trap", "Eraser Trap", "Blackout Trap", "Sticky Key Trap"];
 function ownItemName(id) {
   const o = id - S.base;
   if (o >= 1 && o <= 26) return "Letter " + String.fromCharCode(64 + o);
   if (o > 100 && o <= 250) return `${o - 100} Across Clue`;
   if (o > 300 && o <= 450) return `${o - 300} Down Clue`;
+  if (o >= 990 && o <= 993) return TRAP_NAMES[o - 990];
   if (o === 997) return "Reveal Square";
   if (o === 998) return "Check Word";
   if (o === 999) return "Coffee Break";
@@ -179,12 +196,15 @@ function setupPuzzle(slotData, saveKey) {
     label: [(slotData.themes || []).join(" + "), slotData.difficulty ? slotData.difficulty[0].toUpperCase() + slotData.difficulty.slice(1) : ""].filter(Boolean).join(" · "),
     squares: (slotData.squares || []).map(([r, c]) => r + "," + c),
     items: new Set(), counts: {}, received: 0, checked: new Set(), entries: store.get(saveKey) || {}, saveKey,
-    used: Object.assign({ reveal: 0, check: 0, revealed: [] }, store.get(saveKey + ":used") || {}),
+    used: Object.assign({ reveal: 0, check: 0, revealed: [], trapIndex: 0, effects: { blackout: 0, sticky: null }, mistakes: 0, pendingDeaths: [] }, store.get(saveKey + ":used") || {}),
+    deathLink: !!slotData.death_link, amnesty: slotData.death_link_amnesty ?? 2, lastDeathSent: 0,
+    pendingTraps: [], storageReady: false, away: [],
     wrong: new Set(), sel: null, dir: "across", goalSent: false,
   };
   const first = S.words[0].cells[0];
   S.sel = first; S.dir = S.words[0].direction;
   S.squareSet = new Set(S.squares);
+  S.effects = S.used.effects;
   $("tools").hidden = false;
   buildGrid(); buildKeys(); render();
 }
@@ -240,8 +260,10 @@ function currentWord() {
   return w.find((x) => x.direction === S.dir) || w[0];
 }
 
+const blackedOut = () => S.effects.blackout > 0;
+const stuckLetter = () => (S.effects.sticky && S.effects.sticky.left > 0 ? S.effects.sticky.ch : "");
 function clueText(w) {
-  if (!S.requireClues || hasClue(w)) return w.clue;
+  if (!S.requireClues || hasClue(w)) return blackedOut() ? "— blacked out —" : w.clue;
   return null;
 }
 
@@ -267,7 +289,7 @@ function render() {
     S.words.filter((w) => w.direction === dir).forEach((w) => {
       const li = document.createElement("li");
       const t = clueText(w);
-      li.className = (isSolved(w) ? "solved " : "") + (t ? "" : "locked ") + (w === cw ? "active" : "");
+      li.className = (isSolved(w) ? "solved " : "") + (t ? "" : "locked ") + (t && blackedOut() ? "blackout " : "") + (w === cw ? "active" : "");
       li.innerHTML = `<b>${w.number}</b><span></span>`;
       li.querySelector("span").textContent = t ?? "Locked — needs " + ownItemName(w.clueId);
       li.onclick = () => { S.sel = firstEmpty(w); S.dir = w.direction; render(); };
@@ -280,13 +302,17 @@ function render() {
     $("current").innerHTML = `${cw.number} ${cw.direction[0].toUpperCase() + cw.direction.slice(1)}: ` +
       (t ? escapeHtml(t) : `<span class="lock">Locked — needs ${ownItemName(cw.clueId)}</span>`);
   }
-  for (const b of $("keys").children) if (b.dataset.ch) b.classList.toggle("off", !hasLetter(b.dataset.ch));
+  const stuck = stuckLetter();
+  for (const b of $("keys").children) if (b.dataset.ch) {
+    b.classList.toggle("off", !hasLetter(b.dataset.ch));
+    b.classList.toggle("stuck", b.dataset.ch === stuck);
+  }
   const done = S.words.filter(isSolved).length;
   const letters = [...Array(26)].map((_, i) => String.fromCharCode(65 + i)).filter(hasLetter).length;
   const clues = S.words.filter(hasClue).length;
   const sq = S.squares.length ? ` · squares ${S.squares.filter((k) => S.checked.has(S.ids.square(k))).length}/${S.squares.length}` : "";
   const ms = S.milestones.length ? ` · milestones ${S.milestones.filter((p) => S.checked.has(S.ids.milestone(p))).length}/${S.milestones.length}` : "";
-  $("progress").textContent = (S.label ? S.label + " — " : "") + `Solved ${done}/${S.words.length} words · ${letters} letters · ${clues}/${S.words.length} clues${sq}${ms}`;
+  $("progress").textContent = (S.label ? S.label + " — " : "") + `Solved ${done}/${S.words.length} words · ${letters} letters · ${clues}/${S.words.length} clues${sq}${ms}${S.deathLink ? ` · DeathLink ${S.used.mistakes || 0}/${S.amnesty + 1} mistakes` : ""}`;
   const r = toolsLeft("reveal"), c = toolsLeft("check");
   $("revealBtn").textContent = `Reveal Square (${r})`; $("revealBtn").disabled = r <= 0;
   $("checkBtn").textContent = `Check Word (${c})`; $("checkBtn").disabled = c <= 0;
@@ -325,8 +351,17 @@ function typeLetter(ch) {
     log(`You don't have Letter ${ch} yet.`);
     return;
   }
-  if (!lockedCell(S.sel) && !isRevealed(S.sel)) { S.entries[S.sel] = ch; S.wrong.delete(S.sel); store.set(S.saveKey, S.entries); }
-  step(1); evaluate(); render();
+  if (stuckLetter() === ch) {
+    const b = [...$("keys").children].find((x) => x.dataset.ch === ch);
+    if (b) { b.classList.add("flash"); setTimeout(() => b.classList.remove("flash"), 400); }
+    log(`Letter ${ch} is stuck for ${Math.ceil(S.effects.sticky.left / 1000)} more seconds.`);
+    return;
+  }
+  const key = S.sel, wasEmpty = !cellValue(key);
+  if (!lockedCell(key) && !isRevealed(key)) { S.entries[key] = ch; S.wrong.delete(key); store.set(S.saveKey, S.entries); }
+  step(1); evaluate();
+  if (wasEmpty) checkMistake(key);
+  render();
 }
 
 function erase() {
@@ -394,10 +429,180 @@ function evaluate() {
   }
 }
 
-function receive(ids) {
-  for (const id of ids) { S.items.add(id); S.counts[id] = (S.counts[id] || 0) + 1; }
-  S.received += ids.length;
-  evaluate(); render();
+const isTrap = (id) => id - S.base >= 990 && id - S.base <= 993;
+function addItems(ids, start) {
+  ids.forEach((id, k) => {
+    S.items.add(id); S.counts[id] = (S.counts[id] || 0) + 1;
+    if (isTrap(id)) S.pendingTraps.push({ index: start + k, id });
+  });
+  S.received = start + ids.length;
+}
+function receive(ids, start = S.received) {
+  addItems(ids, start);
+  processTraps(); evaluate(); render();
+}
+
+// ---------------- traps ----------------
+// Each trap fires once. trapIndex (saved on the server) is the item index we've processed traps up to,
+// so reconnecting or opening another browser never replays old traps.
+function processTraps() {
+  if (!S.storageReady || !S.pendingTraps.length) return;
+  let fired = false;
+  for (const t of S.pendingTraps.sort((a, b) => a.index - b.index)) {
+    if (t.index < (S.used.trapIndex || 0)) continue;
+    applyTrap(t.id); S.used.trapIndex = t.index + 1; fired = true;
+  }
+  S.pendingTraps = [];
+  if (fired) saveUsed();
+}
+
+// ---------------- DeathLink ----------------
+// A mistake = your own keystroke fills the last empty square of a word and the word is wrong.
+// Every (amnesty + 1)th mistake sends a death. Scrambles/erasers never count (they don't type).
+function checkMistake(key) {
+  const words = S.cells.get(key).words.map((i) => S.words[i]).filter((w) => !isSolved(w));
+  const wrong = words.find((w) => w.cells.every((k) => cellValue(k)) && w.cells.some((k) => cellValue(k) !== S.cells.get(k).ans));
+  if (!wrong) return;
+  S.used.mistakes = (S.used.mistakes || 0) + 1;
+  if (S.deathLink && S.used.mistakes > S.amnesty) {
+    S.used.mistakes = 0;
+    sendDeath(`${playerName(conn.slot)} filled in a wrong word`);
+  } else if (S.deathLink) {
+    log(`That's not it (${wrong.number} ${wrong.direction}). Mistake ${S.used.mistakes} of ${S.amnesty + 1} before a DeathLink.`);
+  }
+  saveUsed();
+}
+
+function sendDeath(cause) {
+  if (demo) { log("Demo: this would send a DeathLink."); return; }
+  const time = Date.now() / 1000;
+  S.lastDeathSent = time;
+  send({ cmd: "Bounce", tags: ["DeathLink"], data: { time, source: playerName(conn.slot), cause } });
+  showBanner("You sent a DeathLink! Everyone on DeathLink loses progress.", 4000);
+  log("You sent a DeathLink.");
+}
+
+function receiveDeath(data) {
+  if (!S || !S.deathLink || !data || data.time === S.lastDeathSent) return;
+  if ((S.used.pendingDeaths || []).some((d) => d.time === data.time)) return;
+  S.used.pendingDeaths.push({ time: data.time, source: data.source || "Someone", cause: data.cause || "" });
+  log(`DeathLink from ${data.source || "someone"}${data.cause ? `: ${data.cause}` : ""}`);
+  saveUsed();
+  processDeaths();
+}
+
+// Deaths wait until you're looking at the crossword, like timed traps. They're saved on the server,
+// so reloading doesn't dodge one.
+function processDeaths() {
+  if (!S || !S.storageReady || !(S.used.pendingDeaths || []).length) return;
+  if (!isActive() && !demo) { document.title = `(DeathLink!) ${BASE_TITLE}`; return; }
+  const deaths = S.used.pendingDeaths;
+  S.used.pendingDeaths = [];
+  const keys = typedKeys();
+  keys.forEach((k) => { delete S.entries[k]; S.wrong.delete(k); });
+  store.set(S.saveKey, S.entries);
+  const who = [...new Set(deaths.map((d) => d.source))].join(", ");
+  const cause = deaths.length === 1 && deaths[0].cause ? ` (${deaths[0].cause})` : "";
+  showBanner(`DeathLink! ${who}${deaths.length > 1 ? ` x${deaths.length}` : ""}${cause}. ${keys.length} typed letter${keys.length === 1 ? "" : "s"} wiped.`, 6000);
+  log(`DeathLink wiped ${keys.length} typed letters.`);
+  document.title = BASE_TITLE;
+  saveUsed(); render();
+}
+
+// ---------------- "are you actually looking at the crossword?" ----------------
+// Timed traps only count down while this tab is visible and focused, so a trap that lands while
+// you're playing another game waits for you instead of expiring unseen.
+const BASE_TITLE = document.title;
+function isActive() { return document.visibilityState === "visible" && document.hasFocus(); }
+
+let bannerTimer = 0;
+function showBanner(text, ms) {
+  const b = $("banner"); b.textContent = text; b.classList.add("show");
+  clearTimeout(bannerTimer); bannerTimer = setTimeout(() => b.classList.remove("show"), ms);
+  const g = $("grid"); g.classList.remove("grid-shake"); void g.offsetWidth; g.classList.add("grid-shake");
+}
+function banner(text) {
+  log(text);
+  if (isActive() || demo) { showBanner(text, 4000); return; }
+  S.away.push(text.replace(/!.*$/, ""));
+  document.title = `(Trap!) ${BASE_TITLE}`;
+}
+function welcomeBack() {
+  if (!S || !S.away || !S.away.length) return;
+  const counts = {};
+  S.away.forEach((t) => { counts[t] = (counts[t] || 0) + 1; });
+  const list = Object.entries(counts).map(([t, n]) => (n > 1 ? `${t} x${n}` : t)).join(", ");
+  S.away = [];
+  document.title = BASE_TITLE;
+  showBanner(`While you were away: ${list}. Timers start now.`, 7000);
+  render();
+}
+["focus", "visibilitychange"].forEach((ev) => (ev === "focus" ? window : document).addEventListener(ev, () => { if (isActive()) { welcomeBack(); processDeaths(); } }));
+
+// Tick timed effects. Paused whenever you're not looking.
+let lastTick = Date.now(), lastSave = 0, wasRunning = false;
+function effectsLabel() {
+  const parts = [], paused = !isActive() && !demo;
+  if (S.effects.blackout > 0) parts.push(`Blackout ${Math.ceil(S.effects.blackout / 1000)}s`);
+  if (stuckLetter()) parts.push(`Sticky ${S.effects.sticky.ch} ${Math.ceil(S.effects.sticky.left / 1000)}s`);
+  return parts.map((p) => `<span class="${paused ? "paused" : ""}">${p}${paused ? " (paused)" : ""}</span>`).join("");
+}
+setInterval(() => {
+  const now = Date.now(), dt = now - lastTick; lastTick = now;
+  if (!S || !S.effects) return;
+  const running = S.effects.blackout > 0 || stuckLetter() !== "";
+  if (running && (isActive() || demo)) {
+    const before = [blackedOut(), stuckLetter()];
+    if (S.effects.blackout > 0) S.effects.blackout = Math.max(0, S.effects.blackout - dt);
+    if (S.effects.sticky && S.effects.sticky.left > 0) S.effects.sticky.left = Math.max(0, S.effects.sticky.left - dt);
+    if (S.effects.sticky && S.effects.sticky.left === 0) S.effects.sticky = null;
+    if (before[0] !== blackedOut() || before[1] !== stuckLetter()) render();
+    if (now - lastSave > 5000) { lastSave = now; saveUsed(); }
+  } else if (wasRunning && !running) saveUsed();
+  wasRunning = running;
+  const html = effectsLabel();
+  if ($("effects").innerHTML !== html) $("effects").innerHTML = html;
+}, 250);
+window.addEventListener("blur", () => { if (S && S.effects && (S.effects.blackout > 0 || stuckLetter())) saveUsed(); });
+
+function typedKeys() {
+  return [...S.cells.keys()].filter((k) => S.entries[k] && !lockedCell(k) && !isRevealed(k));
+}
+
+function applyTrap(id) {
+  const kind = TRAP_NAMES[id - S.base - 990];
+  if (kind === "Scramble Trap") {
+    const keys = typedKeys();
+    if (keys.length < 2) { banner("Scramble Trap! Nothing to scramble this time."); return; }
+    const vals = keys.map((k) => S.entries[k]);
+    for (let i = vals.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [vals[i], vals[j]] = [vals[j], vals[i]]; }
+    keys.forEach((k, i) => { S.entries[k] = vals[i]; S.wrong.delete(k); });
+    store.set(S.saveKey, S.entries);
+    banner(`Scramble Trap! ${keys.length} of your letters got shuffled.`);
+  } else if (kind === "Eraser Trap") {
+    const scored = S.words.filter((w) => !isSolved(w))
+      .map((w) => ({ w, keys: w.cells.filter((k) => S.entries[k] && !lockedCell(k) && !isRevealed(k)) }))
+      .filter((x) => x.keys.length);
+    if (!scored.length) { banner("Eraser Trap! Nothing to erase this time."); return; }
+    const most = Math.max(...scored.map((x) => x.keys.length));
+    const pick = scored.filter((x) => x.keys.length === most);
+    const { w, keys } = pick[Math.floor(Math.random() * pick.length)];
+    keys.forEach((k) => { delete S.entries[k]; S.wrong.delete(k); });
+    store.set(S.saveKey, S.entries);
+    banner(`Eraser Trap! ${w.number} ${w.direction} got wiped.`);
+  } else if (kind === "Blackout Trap") {
+    S.effects.blackout = (S.effects.blackout || 0) + 30000;
+    banner("Blackout Trap! Clues are hidden for 30 seconds.");
+  } else if (kind === "Sticky Key Trap") {
+    const owned = [...Array(26)].map((_, i) => String.fromCharCode(65 + i)).filter(hasLetter);
+    const needed = new Set(S.words.filter((w) => !isSolved(w)).flatMap((w) => w.cells.filter((k) => !cellValue(k)).map((k) => S.cells.get(k).ans)));
+    const choices = owned.filter((c) => needed.has(c));
+    const pool = choices.length ? choices : owned;
+    if (!pool.length) { banner("Sticky Key Trap! No keys to jam."); return; }
+    const ch = pool[Math.floor(Math.random() * pool.length)];
+    S.effects.sticky = { ch, left: 60000 };
+    banner(`Sticky Key Trap! Letter ${ch} is stuck for 60 seconds.`);
+  }
 }
 
 // ---------------- tools (consumable items) ----------------
@@ -412,6 +617,15 @@ function mergeUsed(remote) {
   S.used.reveal = Math.max(S.used.reveal, remote.reveal || 0);
   S.used.check = Math.max(S.used.check, remote.check || 0);
   S.used.revealed = [...new Set(S.used.revealed.concat(remote.revealed || []))];
+  S.used.trapIndex = Math.max(S.used.trapIndex || 0, remote.trapIndex || 0);
+  // keep whichever copy has more trap time left, so reloading or switching devices can't skip a trap
+  const re = remote.effects || {}, le = S.used.effects;
+  le.blackout = Math.max(le.blackout || 0, re.blackout || 0);
+  if (re.sticky && re.sticky.left > ((le.sticky && le.sticky.left) || 0)) le.sticky = re.sticky;
+  S.effects = S.used.effects;
+  S.used.mistakes = Math.max(S.used.mistakes || 0, remote.mistakes || 0);
+  const seen = new Set((S.used.pendingDeaths || []).map((d) => d.time));
+  S.used.pendingDeaths = (S.used.pendingDeaths || []).concat((remote.pendingDeaths || []).filter((d) => !seen.has(d.time)));
 }
 
 function useReveal() {
@@ -444,6 +658,7 @@ function useCheck() {
 // ---------------- demo mode ----------------
 function startDemo() {
   if (ws) { ws.onclose = null; ws.close(); ws = null; }
+  clearInterval(reconnectTimer); conn.keepAlive = false; session.set(null);
   demo = true;
   setupPuzzle(JSON.parse(JSON.stringify(DEMO)), "cw-demo");
   S.entries = {}; store.set(S.saveKey, {});
@@ -454,8 +669,9 @@ function startDemo() {
   const used = new Set(S.words.flatMap((w) => [...w.answer]));
   used.forEach((c) => { if (!start.has(c)) S.demoPool.push(S.ids.letter(c)); });
   S.words.forEach((w) => { if (!starters.includes(w)) S.demoPool.push(w.clueId); });
-  S.demoPool.push(S.ids.reveal, S.ids.reveal, S.ids.check);
-  S.used = { reveal: 0, check: 0, revealed: [] }; S.milestones = [25, 50, 75, 100];
+  S.demoPool.push(S.ids.reveal, S.ids.reveal, S.ids.check, S.base + 990, S.base + 991, S.base + 992, S.base + 993);
+  S.used = { reveal: 0, check: 0, revealed: [], trapIndex: 0, effects: { blackout: 0, sticky: null }, mistakes: 0, pendingDeaths: [] };
+  S.effects = S.used.effects; S.storageReady = true; S.milestones = [25, 50, 75, 100];
   S.squares = [...S.cells.keys()].sort((a, b) => { const [ar, ac] = a.split(",").map(Number), [br, bc] = b.split(",").map(Number); return ar - br || ac - bc; }).filter((_, i) => i % 3 === 2);
   S.squareSet = new Set(S.squares);
   $("log").innerHTML = "";
@@ -467,8 +683,8 @@ function startDemo() {
 function demoReward() {
   for (let n = 0; n < 2 && S.demoPool.length; n++) {
     const id = S.demoPool.splice(Math.floor(Math.random() * S.demoPool.length), 1)[0];
-    log(`Received <span class="i-prog">${ownItemName(id)}</span>`, true);
-    S.items.add(id);
+    log(`Received <span class="${isTrap(id) ? "" : "i-prog"}">${ownItemName(id)}</span>`, true);
+    addItems([id], S.received);
   }
   // never soft-lock the demo: if nothing is solvable, grant what the cheapest word still needs
   const needs = (w) => [...new Set(w.answer)].filter((c) => !hasLetter(c)).map(S.ids.letter).concat(hasClue(w) ? [] : [w.clueId]);
@@ -476,11 +692,11 @@ function demoReward() {
   if (open.length && !open.some((w) => needs(w).length === 0)) {
     open.sort((a, b) => needs(a).length - needs(b).length);
     for (const id of needs(open[0]).filter((x) => !S.items.has(x))) {
-      S.demoPool = S.demoPool.filter((x) => x !== id); S.items.add(id);
+      S.demoPool = S.demoPool.filter((x) => x !== id); addItems([id], S.received);
       log(`Received <span class="i-prog">${ownItemName(id)}</span>`, true);
     }
   }
-  setTimeout(() => { evaluate(); render(); });
+  setTimeout(() => { processTraps(); evaluate(); render(); });
 }
 
 // ---------------- Archipelago connection ----------------
@@ -524,13 +740,33 @@ function shareLink() {
   else prompt("Copy this link:", text);
 }
 
+const session = {
+  get() { try { return JSON.parse(sessionStorage.getItem("cw-session")); } catch { return null; } },
+  set(v) { try { v ? sessionStorage.setItem("cw-session", JSON.stringify(v)) : sessionStorage.removeItem("cw-session"); } catch {} },
+};
+let reconnectTimer = 0;
+function scheduleReconnect() {
+  const n = Math.min(conn.retries++, 5), wait = [2, 4, 8, 15, 30, 30][n];
+  let left = wait;
+  setStatus(`Connection lost. Reconnecting in ${left}s…`);
+  clearInterval(reconnectTimer);
+  reconnectTimer = setInterval(() => {
+    left--;
+    if (left > 0) { setStatus(`Connection lost. Reconnecting in ${left}s…`); return; }
+    clearInterval(reconnectTimer);
+    tryUrl(conn.urls, 0, conn.slotName);
+  }, 1000);
+}
+
 function connect() {
   let addr = $("server").value.trim() || "archipelago.gg:38281";
   const slot = $("slot").value.trim();
   if (!slot) { setStatus("Enter your slot name"); return; }
   store.set("cw-conn", { server: addr, slot });
   if (ws) { ws.onclose = null; ws.close(); }
-  demo = false;
+  clearInterval(reconnectTimer);
+  demo = false; conn.retries = 0; conn.keepAlive = false;
+  conn.addr = addr; conn.slotName = slot; conn.password = $("password").value || null;
   let urls;
   if (/^wss?:\/\//.test(addr)) urls = [addr];
   else {
@@ -547,11 +783,13 @@ function connect() {
       connHint = "";
     }
   }
+  conn.urls = urls;
   tryUrl(urls, 0, slot);
 }
 
 function tryUrl(urls, i, slot) {
   if (i >= urls.length) {
+    if (conn.keepAlive) { scheduleReconnect(); return; }
     setStatus("Could not reach server");
     log(connHint || "Could not reach the server. Check the address and port, and that the room is still running.");
     return;
@@ -563,6 +801,7 @@ function tryUrl(urls, i, slot) {
   ws.onerror = () => {};
   ws.onclose = () => {
     if (!opened) { tryUrl(urls, i + 1, slot); return; }
+    if (conn.keepAlive && !demo) { log("Connection lost. Reconnecting automatically…"); scheduleReconnect(); return; }
     setStatus("Disconnected"); log("Disconnected from server.");
   };
   ws.onmessage = (e) => { for (const p of JSON.parse(e.data)) handle(p, slot); };
@@ -574,7 +813,7 @@ function handle(p, slotName) {
       conn.seed = p.seed_name;
       send({ cmd: "GetDataPackage", games: p.games });
       send({
-        cmd: "Connect", game: GAME, name: slotName, password: $("password").value || null, uuid: uuid(),
+        cmd: "Connect", game: GAME, name: slotName, password: conn.password, uuid: uuid(),
         version: { major: 0, minor: 6, build: 4, class: "Version" }, items_handling: 7, tags: [], slot_data: true,
       });
       break;
@@ -586,6 +825,7 @@ function handle(p, slotName) {
       }
       break;
     case "ConnectionRefused":
+      conn.keepAlive = false; session.set(null);
       setStatus("Refused: " + (p.errors || []).join(", "));
       log("Connection refused: " + (p.errors || []).join(", "));
       break;
@@ -593,24 +833,37 @@ function handle(p, slotName) {
       conn.slot = p.slot; conn.team = p.team;
       conn.players = Object.fromEntries(p.players.map((x) => [x.slot, x.alias || x.name]));
       conn.slotInfo = p.slot_info || {};
-      setupPuzzle(p.slot_data, `cw:${conn.seed}:${p.slot}`);
+      const key = `cw:${conn.seed}:${p.slot}`;
+      const resumed = S && S.saveKey === key && !demo;
+      if (!resumed) setupPuzzle(p.slot_data, key);   // same room after a drop: keep the board as it is
       for (const id of p.checked_locations) S.checked.add(id);
+      conn.retries = 0; conn.keepAlive = true;
+      session.set({ server: conn.addr, slot: conn.slotName, password: conn.password });
+      if (S.deathLink) send({ cmd: "ConnectUpdate", tags: ["DeathLink"] });
       send({ cmd: "Get", keys: [storageKey()] });
+      // if the server never answers, don't hold traps forever (local save still prevents most replays)
+      setTimeout(() => { if (S && !S.storageReady) { S.storageReady = true; processTraps(); render(); } }, 5000);
       setStatus(`Connected as ${playerName(p.slot)}`);
-      log(`Connected. ${S.words.length} words in your puzzle.`);
+      log(resumed ? "Reconnected." : `Connected. ${S.words.length} words in your puzzle.${S.deathLink ? " DeathLink is on." : ""}`);
       render();
       break;
     case "ReceivedItems":
       if (!S) break;
-      if (p.index === 0) { S.items.clear(); S.counts = {}; S.received = 0; }
+      if (p.index === 0) { S.items.clear(); S.counts = {}; S.received = 0; S.pendingTraps = []; }
       else if (p.index !== S.received) { send({ cmd: "Sync" }); break; }
-      receive(p.items.map((x) => x.item));
+      receive(p.items.map((x) => x.item), p.index);
       break;
     case "Retrieved":
-      if (S && p.keys) { mergeUsed(p.keys[storageKey()]); store.set(S.saveKey + ":used", S.used); evaluate(); render(); }
+      if (S && p.keys && storageKey() in p.keys) {
+        mergeUsed(p.keys[storageKey()]); store.set(S.saveKey + ":used", S.used);
+        S.storageReady = true; processTraps(); processDeaths(); evaluate(); render();
+      }
       break;
     case "RoomUpdate":
       if (S && p.checked_locations) { p.checked_locations.forEach((id) => S.checked.add(id)); render(); }
+      break;
+    case "Bounced":
+      if ((p.tags || []).includes("DeathLink")) receiveDeath(p.data);
       break;
     case "PrintJSON":
       log(p.data.map(partHtml).join(""), true);
@@ -655,6 +908,12 @@ const qs = new URLSearchParams(location.search);
 if (qs.get("server")) $("server").value = qs.get("server");
 if (qs.get("slot")) $("slot").value = qs.get("slot");
 window.addEventListener("resize", () => { if (S) { buildGrid(); render(); } });
+// Chrome can unload an idle tab (or the PC sleeps); when this tab comes back, reconnect on its own.
+const resume = session.get();
+if (resume && resume.server && resume.slot) {
+  $("server").value = resume.server; $("slot").value = resume.slot; $("password").value = resume.password || "";
+  connect(); conn.keepAlive = true;
+}
 </script>
 </body>
 </html>

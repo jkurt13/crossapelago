@@ -1,4 +1,4 @@
-# Crossword Randomizer for Archipelago — v0.4.0
+# Crossword Randomizer for Archipelago — v0.6.0
 
 A crossword you play in the browser as part of an [Archipelago](https://archipelago.gg) multiworld.
 Other players send you letter keys and clues; solving words sends out checks.
@@ -51,6 +51,10 @@ Crossword Randomizer:
   milestone_checks: true      # +4 checks at 25/50/75/100% of words solved
   square_checks: off          # off | every_square | every_nth
   square_check_interval: 3    # N for every_nth (2-10)
+  trap_chance: 0              # % of filler replaced by traps (0 = off)
+  trap_types: [Scramble, Eraser, Blackout, Sticky Key]
+  death_link: false
+  death_link_amnesty: 2       # free wrong words before one sends a death (2 = every 3rd)
 ```
 
 ## How it works
@@ -70,7 +74,12 @@ Crossword Randomizer:
   - `Letter A`–`Letter Z`: you can only type letters you've received.
   - `N Across Clue` / `N Down Clue`.
   - `Reveal Square` / `Check Word`: consumable "useful" filler.
-  - Item groups `Letters`, `Clues` and `Tools` work with `!hint`.
+  - Traps (optional, `trap_chance`):
+    - `Scramble Trap` shuffles your typed letters.
+    - `Eraser Trap` wipes your typed letters from the unsolved word with the most filled in.
+    - `Blackout Trap` hides all clues for 30 s.
+    - `Sticky Key Trap` jams one of your letters for 60 s, preferring letters you still need.
+  - Item groups `Letters`, `Clues`, `Tools` and `Traps` work with `!hint`.
 - **Checks:**
   - `N Across` / `N Down`: fire when the word is correct and its clue is unlocked.
   - `25% Solved` … `100% Solved`: milestone checks, location group `Milestones`.
@@ -87,10 +96,54 @@ Crossword Randomizer:
   - Progression items can fill at most ~80% of the word checks, square checks, and the 25% and 50% milestones. The 75% and 100% milestones come too late to count.
   - The rest is filler: Reveal/Check tools up to about 1 per 2 words, then `Coffee Break` junk. Without that cap, every-square seeds would hand out dozens of reveals.
   - Any extra clues (or common letters, for tiny puzzles) are given at the start.
+- **Timed traps wait for you.**
+  - Blackout and Sticky Key only count down while the crossword tab is visible and focused. While you're in another game they're paused, shown as "(paused)" in the pills above the grid.
+  - Traps that land while you're away change the tab title to "(Trap!)", and a "While you were away: ..." banner lists them when you come back.
+  - Remaining trap time is saved on the server (checked about every 5 s and whenever you switch away), so reloading or switching devices doesn't skip a trap.
+- **DeathLink:**
+  - A mistake is when your own keystroke fills the last empty square of a word and the word is wrong. Traps never count.
+  - Every (amnesty + 1)th mistake sends a death. The progress line shows `DeathLink n/3 mistakes`.
+  - A received death erases every typed letter in unsolved words. Solved words and revealed squares stay.
+  - Like timed traps, a death waits until you're focused on the crossword. The tab title shows "(DeathLink!)" in the meantime.
+  - Pending deaths are saved on the server, so reloading doesn't dodge one. Your own deaths aren't applied back to you.
+- **Auto-reconnect:**
+  - If the connection drops, the page retries at 2, 4, 8, 15, then every 30 s, and keeps your board as it is.
+  - If Chrome unloads the tab or the PC sleeps, the page reconnects when you come back, without pressing Connect. The server, slot and password for that tab are kept in the tab's session storage, which clears when the tab is closed.
+  - A refused login (wrong slot or password) stops the retries.
+- **Traps fire once.** The item index processed so far (`trapIndex`) is saved with the tool usage, so reconnecting or opening another browser never replays old traps. Traps wait for that saved value before firing.
 - **Tool usage** (used counts and revealed squares) is saved in the server's data storage under `crossword_<team>_<slot>`, so it carries across browsers and devices. Typed letters are only saved in the browser.
 - **Hosting:** the client uses the raw AP WebSocket protocol, with no libraries, so it's a single static file.
   - From an `https://` page it uses `wss://`, plus `ws://` for `localhost` / `127.0.0.1`, which browsers allow.
   - When opened as a local file it also tries `ws://` for LAN addresses.
+
+## Tested (v0.6.0 — DeathLink, reconnect)
+- **Two-player room (Alice + Bob, both DeathLink, amnesty 1):**
+  - Alice's 1st wrong word was free; her 2nd sent a death.
+  - Bob was away: the death stayed pending, his 5 typed letters stayed, and his title read "(DeathLink!)". On focus, the letters were wiped and a banner named Alice.
+  - Alice didn't receive her own death.
+  - A 2nd death sent while Bob was away was still delivered after he reloaded in a fresh browser.
+- **Server killed and restarted:** the client showed "Reconnecting in …" and came back on its own. After a tab reload it auto-connected.
+- **Crossword-only seeds:** now keep more filler and guarantee at least 1 solvable starting word per 4. They're tighter than multiworlds because no other games' locations can hold their items.
+  - Default solo: 40/40 generated (was 39/40).
+  - The extreme solo test (10 words, no letters): 20/20 (was about 50%).
+  - Multiworld settings are unchanged, and default + Hollow Knight passed 8/8.
+
+## Tested (away handling)
+- **While away** (tab unfocused), a Sticky Key trap stayed at 60 s and a Blackout at 30 s.
+  - The tab title flagged "(Trap!)", and the banner was held back.
+- **On return**, the "While you were away" banner listed the traps, and both timers started counting down.
+- **Reloading in a fresh browser** restored the remaining Sticky time from the server.
+
+## Tested (v0.5.0 — traps)
+- **World tests:** 49, all passing. New ones check that only the chosen trap types appear, and that traps are off by default.
+- **Full playthrough, trap_chance 100** (35 traps in a solo game):
+  - Each trap did its job:
+    - Scramble shuffled 6 typed letters.
+    - Eraser wiped a word.
+    - Blackout greyed out the clues.
+    - Sticky Key blocked its letter and marked the key.
+  - The puzzle, squares, milestones and goal still completed.
+- **Reconnect:** after 8 traps fired, a fresh browser with no saved data reconnected and replayed 0 traps. The saved index was restored from the server.
 
 ## Tested (hosting)
 - The page was served over HTTPS, the way GitHub Pages serves it.
@@ -131,8 +184,9 @@ Crossword Randomizer:
   - Tool usage was restored in a fresh browser from server storage.
 
 ## Known limits
-- With square checks **off**, `starting_letters: none` or `vowels` as the only game fails occasionally (about 1 in 5). With any square checks on, or in a multiworld, it's fine.
 - With square checks off, 25-word puzzles still start with about 13 of 25 clues unlocked. Turn on `every_nth` to fix this.
+- Crossword-only games (solo, or only crosswords) start with more free words than the same settings in a multiworld. That's the price of reliable generation.
+- Typed letters live in each browser. A DeathLink or trap still applies on another device, but there may be nothing there to wipe.
 
 ## Adding more check types
 The IDs are listed at the top of `__init__.py`.

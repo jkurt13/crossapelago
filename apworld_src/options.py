@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from Options import Choice, DefaultOnToggle, OptionSet, PerGameCommonOptions, Range
+from Options import Choice, DeathLink, DefaultOnToggle, OptionSet, PerGameCommonOptions, Range
 
 
 class Themes(OptionSet):
@@ -109,6 +109,36 @@ class SquareCheckInterval(Range):
     default = 3
 
 
+class TrapChance(Range):
+    """Percent chance that each filler item (Reveal Square, Check Word, Coffee Break) is replaced by a trap.
+    0 turns traps off."""
+    display_name = "Trap Chance"
+    range_start = 0
+    range_end = 100
+    default = 0
+
+
+class TrapTypes(OptionSet):
+    """Which traps can appear.
+    Scramble: shuffles the letters you've typed into unsolved words.
+    Eraser: erases your typed letters from one unsolved word.
+    Blackout: hides all clues for 30 seconds.
+    Sticky Key: disables one of your letters for 60 seconds."""
+    display_name = "Trap Types"
+    valid_keys = frozenset({"Scramble", "Eraser", "Blackout", "Sticky Key"})
+    default = frozenset({"Scramble", "Eraser", "Blackout", "Sticky Key"})
+
+
+class DeathLinkAmnesty(Range):
+    """With Death Link on: how many wrong words you can fill in for free before one sends a death.
+    A "wrong word" is when your own typing fills the last empty square of a word and the answer is wrong.
+    2 means every 3rd wrong word sends a death. Receiving a death erases everything you've typed into unsolved words."""
+    display_name = "Death Link Amnesty"
+    range_start = 0
+    range_end = 10
+    default = 2
+
+
 @dataclass
 class CrosswordOptions(PerGameCommonOptions):
     themes: Themes
@@ -122,3 +152,7 @@ class CrosswordOptions(PerGameCommonOptions):
     milestone_checks: MilestoneChecks
     square_checks: SquareChecks
     square_check_interval: SquareCheckInterval
+    trap_chance: TrapChance
+    trap_types: TrapTypes
+    death_link: DeathLink
+    death_link_amnesty: DeathLinkAmnesty

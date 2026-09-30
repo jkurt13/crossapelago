@@ -11,6 +11,10 @@ received. Other players send you **clues** ("3 Across Clue") and **letter keys**
 
 Both are consumable. Your uses are saved on the server, so they follow you between devices.
 
+## Are there traps?
+Optional (Trap Chance, off by default). Scramble shuffles your typed letters, Eraser wipes one word,
+Blackout hides clues for 30 seconds, and Sticky Key jams one of your letters for 60 seconds.
+
 ## What is a check?
 - Correctly solving a word whose clue you have unlocked.
 - Optional milestones: solving 25%, 50%, 75% and 100% of the words.
@@ -19,3 +23,8 @@ Both are consumable. Your uses are saved on the server, so they follow you betwe
 
 ## What is the goal?
 Solve every word in the puzzle.
+
+## Does it support DeathLink?
+Yes. Filling in a wrong word counts as a mistake. After your free mistakes (Death Link Amnesty), the next one sends
+a death. Receiving a death erases everything you've typed into unsolved words. Like timed traps, a death waits
+until you're looking at the crossword.

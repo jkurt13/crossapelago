@@ -19,7 +19,8 @@ MAX_NUMBER = 150
 #            "N Down Clue"         BASE+300+N
 #            Reveal Square         BASE+997   (useful, consumable)
 #            Check Word            BASE+998   (useful, consumable)
-#            Coffee Break          BASE+999   (legacy filler, no longer placed)
+#            Coffee Break          BASE+999   (junk filler)
+#            Scramble/Eraser/Blackout/Sticky Key Trap  BASE+990..993
 # Locations: "N Across"            BASE+1000+N
 #            "N Down"              BASE+1300+N
 #            "P% Solved"           BASE+9000+P  (P = 25, 50, 75, 100)
@@ -29,6 +30,7 @@ REVEAL = "Reveal Square"
 CHECK = "Check Word"
 FILLER = "Coffee Break"
 USEFUL_FILLER = (REVEAL, CHECK)
+TRAPS = {"Scramble": "Scramble Trap", "Eraser": "Eraser Trap", "Blackout": "Blackout Trap", "Sticky Key": "Sticky Key Trap"}
 MILESTONES = (25, 50, 75, 100)
 GRID_MAX = 25
 # puzzle_size -> (word count, max grid side)
@@ -79,6 +81,8 @@ for n in range(1, MAX_NUMBER + 1):
     location_name_to_id[word_location(n, "across")] = BASE_ID + 1000 + n
     location_name_to_id[word_location(n, "down")] = BASE_ID + 1300 + n
 item_name_to_id[REVEAL] = BASE_ID + 997
+for _i, _trap in enumerate(TRAPS.values()):
+    item_name_to_id[_trap] = BASE_ID + 990 + _i
 item_name_to_id[CHECK] = BASE_ID + 998
 item_name_to_id[FILLER] = BASE_ID + 999
 for _pct in MILESTONES:
@@ -122,6 +126,7 @@ class CrosswordWorld(World):
         "Letters": {letter_item(ch) for ch in LETTERS},
         "Clues": {n for n in item_name_to_id if n.endswith(" Clue")},
         "Tools": set(USEFUL_FILLER),
+        "Traps": set(TRAPS.values()),
     }
     location_name_groups = {
         "Milestones": {milestone_location(p) for p in MILESTONES},
@@ -202,7 +207,9 @@ class CrosswordWorld(World):
         start_clues: set[str] = set()
         candidates = self.words[:]
         self.random.shuffle(candidates)
-        guaranteed = max(self.options.starting_words.value, 2, -(-len(self.words) // 10))
+        crossword_only = all(self.multiworld.game[p] == GAME for p in self.multiworld.player_ids)
+        floor = -(-len(self.words) // (4 if crossword_only else 10))
+        guaranteed = max(self.options.starting_words.value, 2, floor)
         for _ in range(min(guaranteed, len(candidates))):
             candidates.sort(key=lambda w: len(set(w.answer) - start_letters))
             w = candidates.pop(0)
@@ -221,7 +228,10 @@ class CrosswordWorld(World):
         pool_size = len(remaining) + len(used_letters - start_letters)
         # Late milestones (75%/100%) can't hold much in a solo seed, so only 25%/50% count as room.
         early_slots = len(self.words) + len(self.squares) + (2 if self.options.milestone_checks else 0)
-        max_progression = early_slots - early_slots // 5
+        # Crossword-only seeds (solo, or only crosswords) have no other games to spread items into,
+        # so keep more slack: a third of the early slots stay filler instead of a fifth.
+        crossword_only = all(self.multiworld.game[p] == GAME for p in self.multiworld.player_ids)
+        max_progression = early_slots - early_slots // (3 if crossword_only else 5)
         overflow = max(0, pool_size - max_progression)
         start_clues.update(remaining[:overflow])
         overflow -= min(overflow, len(remaining))
@@ -258,6 +268,8 @@ class CrosswordWorld(World):
     def create_item(self, name: str) -> CrosswordItem:
         if name == FILLER:
             cls = ItemClassification.filler
+        elif name in TRAPS.values():
+            cls = ItemClassification.trap
         elif name in USEFUL_FILLER:
             cls = ItemClassification.useful
         elif name.endswith(" Clue") and not self.options.require_clues:
@@ -283,8 +295,12 @@ class CrosswordWorld(World):
         # Tools are capped at ~1 per 2 words so big square-check pools don't hand out a reveal per square;
         # anything beyond that is Coffee Break junk.
         tool_budget = -(-len(self.words) // 2)
+        traps = [TRAPS[t] for t in sorted(self.options.trap_types.value) if t in TRAPS]
+        trap_chance = self.options.trap_chance.value if traps else 0
         while len(pool) < self.location_count():
-            if tool_budget > 0:
+            if trap_chance and self.random.randint(1, 100) <= trap_chance:
+                pool.append(self.create_item(self.random.choice(traps)))
+            elif tool_budget > 0:
                 pool.append(self.create_item(self.get_filler_item_name()))
                 tool_budget -= 1
             else:
@@ -333,6 +349,8 @@ class CrosswordWorld(World):
             "milestones": list(MILESTONES) if self.options.milestone_checks else [],
             "squares": [[r, c] for r, c in self.squares],
             "require_clues": bool(self.options.require_clues),
+            "death_link": bool(self.options.death_link),
+            "death_link_amnesty": self.options.death_link_amnesty.value,
             "themes": sorted(self.options.themes.value) or ["General"],
             "difficulty": self.options.difficulty.current_key,
             "width": width,
