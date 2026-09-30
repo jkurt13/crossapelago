@@ -1,0 +1,919 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Crossword Randomizer</title>
+<meta name="description" content="Web client for the Crossword Randomizer Archipelago game: solve a crossword while other players send you letters and clues.">
+<meta name="theme-color" content="#3a6ff7">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Crect width='30' height='30' rx='5' fill='%232a2a2e'/%3E%3Crect x='3' y='3' width='11' height='11' fill='%23fff'/%3E%3Crect x='16' y='3' width='11' height='11' fill='%23ffd84d'/%3E%3Crect x='3' y='16' width='11' height='11' fill='%23fff'/%3E%3C/svg%3E">
+<style>
+:root {
+  --bg: #f6f4ef; --panel: #ffffff; --ink: #1d1d1f; --muted: #6b6b70; --line: #d9d6cf;
+  --cell: #ffffff; --block: #2a2a2e; --sel: #ffd84d; --word: #dbe9ff; --solved: #d7f2dc; --solved-ink: #1d6b33;
+  --accent: #3a6ff7; --bad: #d64545; --locked: #a3a3a8;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #17171a; --panel: #212125; --ink: #ececf0; --muted: #9a9aa2; --line: #36363c;
+    --cell: #2c2c31; --block: #121214; --sel: #8a6d00; --word: #23365c; --solved: #1f3d27; --solved-ink: #8fe0a4;
+    --accent: #7aa0ff; --bad: #ff7a7a; --locked: #5c5c63;
+  }
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.4 system-ui, -apple-system, "Segoe UI", sans-serif; }
+header { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; padding: 10px 16px; background: var(--panel); border-bottom: 1px solid var(--line); }
+header h1 { font-size: 17px; margin: 0 12px 0 0; }
+header input { padding: 6px 8px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); color: var(--ink); min-width: 0; }
+#server { width: 190px; } #slot { width: 120px; } #password { width: 110px; }
+button { padding: 6px 12px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); color: var(--ink); cursor: pointer; font: inherit; }
+button.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+#status { color: var(--muted); font-size: 13px; margin-left: auto; }
+main { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 16px; padding: 16px; max-width: 1300px; margin: 0 auto; }
+@media (max-width: 860px) { main { grid-template-columns: minmax(0, 1fr); padding: 16px 12px; } header input { flex: 1 1 120px; } }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 12px; }
+#current { font-weight: 600; min-height: 22px; margin-bottom: 10px; }
+#current .lock { color: var(--locked); font-weight: 400; }
+#gridwrap { overflow: auto; }
+#grid { display: grid; gap: 0; margin: 0 auto; width: max-content; }
+.cell { width: var(--cs); height: var(--cs); position: relative; background: var(--block); }
+.cell.open { background: var(--cell); outline: 1px solid var(--line); cursor: pointer; }
+.cell.inword { background: var(--word); }
+.cell.solved { background: var(--solved); color: var(--solved-ink); }
+.cell.sel { background: var(--sel); }
+.cell.revealed .ch { color: var(--accent); }
+.cell.sq::before { content: ""; position: absolute; right: 3px; bottom: 3px; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); opacity: .7; }
+.cell.sq.done::before { background: var(--solved-ink); opacity: .35; }
+.cell.wrong .ch { color: var(--bad); }
+.cell.wrong::after { content: ""; position: absolute; left: 12%; right: 12%; top: 50%; border-top: 2px solid var(--bad); transform: rotate(-35deg); }
+#tools[hidden] { display: none; }
+#banner { position: fixed; top: 70px; left: 50%; transform: translateX(-50%) translateY(-10px); max-width: calc(100% - 32px);
+  background: var(--bad); color: #fff; padding: 10px 16px; border-radius: 8px; font-weight: 600; z-index: 10;
+  box-shadow: 0 4px 18px rgba(0,0,0,.25); opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s; }
+#banner.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+#effects { display: flex; flex-wrap: wrap; gap: 8px; margin: -4px 0 10px; }
+#effects:empty { display: none; }
+#effects span { font-size: 13px; font-weight: 600; color: var(--bad); border: 1px solid var(--bad); border-radius: 999px; padding: 2px 10px; }
+#effects span.paused { color: var(--muted); border-color: var(--line); font-weight: 400; }
+#keys button.stuck { color: var(--bad); border-color: var(--bad); text-decoration: line-through; background: transparent; }
+.clues li.blackout span { color: var(--locked); letter-spacing: .1em; }
+.grid-shake { animation: shake .4s; }
+@keyframes shake { 20%, 60% { transform: translateX(-6px); } 40%, 80% { transform: translateX(6px); } }
+@media (prefers-reduced-motion: reduce) { .grid-shake { animation: none; } #banner { transition: none; } }
+#tools { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+#tools button:disabled { opacity: .45; cursor: default; }
+#tools .hint { font-size: 12px; color: var(--muted); align-self: center; }
+.cell .num { position: absolute; top: 1px; left: 2px; font-size: calc(var(--cs) * 0.28); color: var(--muted); line-height: 1; }
+.cell .ch { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: calc(var(--cs) * 0.55); text-transform: uppercase; }
+#keys { display: grid; grid-template-columns: repeat(13, 1fr); gap: 4px; margin-top: 12px; }
+#keys button { padding: 8px 0; font-weight: 700; min-width: 0; }
+#keys button.off { color: var(--locked); background: transparent; border-style: dashed; }
+#keys button.flash { border-color: var(--bad); color: var(--bad); }
+#keys .wide { grid-column: span 2; }
+#progress { font-size: 13px; color: var(--muted); margin-top: 10px; }
+.side { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.clues h2 { font-size: 13px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin: 6px 0; }
+.clues ol { list-style: none; margin: 0; padding: 0; max-height: 34vh; overflow: auto; }
+.clues li { padding: 4px 6px; border-radius: 5px; cursor: pointer; display: flex; gap: 8px; }
+.clues li b { min-width: 22px; text-align: right; }
+.clues li.active { background: var(--word); }
+.clues li.solved span { text-decoration: line-through; color: var(--muted); }
+.clues li.locked span { color: var(--locked); font-style: italic; }
+#log { height: 220px; overflow: auto; font-size: 13px; }
+#log div { padding: 2px 0; border-bottom: 1px dotted var(--line); overflow-wrap: anywhere; }
+#chat { display: flex; gap: 6px; margin-top: 8px; } #chat input { flex: 1; min-width: 0; padding: 6px 8px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); color: var(--ink); }
+.empty { color: var(--muted); padding: 30px 10px; text-align: center; }
+.intro { max-width: 560px; padding: 8px 4px 16px; line-height: 1.5; }
+.intro h2 { font-size: 18px; margin: 0 0 6px; }
+.intro p { margin: 0 0 10px; color: var(--muted); }
+.intro ol { margin: 0 0 12px; padding-left: 20px; }
+.intro li { margin: 4px 0; }
+.intro a { color: var(--accent); }
+.intro code { background: var(--bg); border: 1px solid var(--line); border-radius: 4px; padding: 0 4px; font-size: 13px; }
+.p-self { color: var(--accent); font-weight: 600; } .i-prog { color: #b36bff; font-weight: 600; } .i-use { color: #3a9ad9; } .loc { color: #2f9e6e; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Crossword Randomizer</h1>
+  <input id="server" placeholder="archipelago.gg:38281" autocomplete="off">
+  <input id="slot" placeholder="Slot name" autocomplete="off">
+  <input id="password" placeholder="Password" type="password" autocomplete="off">
+  <button class="primary" id="connectBtn">Connect</button>
+  <button id="demoBtn" title="Play a small offline puzzle to try the controls">Demo</button>
+  <button id="shareBtn" title="Copy a link with the server and slot filled in">Copy link</button>
+  <span id="status">Not connected</span>
+</header>
+<div id="banner" role="status" aria-live="assertive"></div>
+<main>
+  <section class="card">
+    <div id="current"></div>
+    <div id="effects" aria-live="polite"></div>
+    <div id="gridwrap"><div id="grid"><div class="intro">
+      <h2>Solve a crossword inside your Archipelago multiworld</h2>
+      <p>Clues and letter keys are scattered across everyone's games. Solving words sends out checks.</p>
+      <ol>
+        <li>Download <a href="crossword_randomizer.apworld" download>crossword_randomizer.apworld</a> and put it in your Archipelago <code>custom_worlds</code> folder.</li>
+        <li>Grab the <a href="Crossword%20Randomizer.yaml" download>YAML template</a>, set your name and options, and generate as usual.</li>
+        <li>Enter the server address and your slot name above, then press <b>Connect</b>.</li>
+      </ol>
+      <p>Just want to try it? Press <b>Demo</b> for a small offline puzzle.</p>
+    </div></div></div>
+    <div id="keys"></div>
+    <div id="tools" hidden>
+      <button id="revealBtn" disabled title="Fill in the selected square">Reveal Square (0)</button>
+      <button id="checkBtn" disabled title="Mark wrong letters in the current word">Check Word (0)</button>
+      <span class="hint">Tools are items other players can send you. Blue dots mark squares that are checks.</span>
+    </div>
+    <div id="progress"></div>
+  </section>
+  <aside class="side">
+    <div class="card clues"><h2>Across</h2><ol id="across"></ol><h2>Down</h2><ol id="down"></ol></div>
+    <div class="card"><div id="log"></div><form id="chat"><input id="chatIn" placeholder="Chat or !hint Letter Q"><button>Send</button></form></div>
+  </aside>
+</main>
+<script>
+"use strict";
+const GAME = "Crossword Randomizer";
+const DEMO = {"version":1,"id_base":7654300000,"require_clues":true,"width":19,"height":12,"words":[{"number":1,"direction":"across","row":0,"col":11,"answer":"SILVER","clue":"Second-place medal metal"},{"number":4,"direction":"across","row":3,"col":9,"answer":"FROG","clue":"Hopping amphibian"},{"number":5,"direction":"across","row":4,"col":14,"answer":"STORM","clue":"Thunder and lightning event"},{"number":6,"direction":"across","row":5,"col":5,"answer":"BASEBALL","clue":"Sport with a diamond"},{"number":8,"direction":"across","row":7,"col":12,"answer":"BIKE","clue":"Two-wheeler"},{"number":9,"direction":"across","row":8,"col":4,"answer":"FOREST","clue":"Area thick with trees"},{"number":12,"direction":"across","row":10,"col":0,"answer":"COOKIE","clue":"Chocolate chip treat"},{"number":13,"direction":"across","row":10,"col":7,"answer":"MOON","clue":"Earth's satellite"},{"number":1,"direction":"down","row":0,"col":11,"answer":"SCHOOL","clue":"Place for learning"},{"number":2,"direction":"down","row":0,"col":16,"answer":"RADIO","clue":"FM or AM device"},{"number":3,"direction":"down","row":3,"col":6,"answer":"PLAYER","clue":"One in the game"},{"number":7,"direction":"down","row":5,"col":12,"answer":"LIBRARY","clue":"Book lender"},{"number":10,"direction":"down","row":8,"col":5,"answer":"OPEN","clue":"Unlock"},{"number":11,"direction":"down","row":8,"col":8,"answer":"SNOW","clue":"Winter flakes"}]};
+const $ = (id) => document.getElementById(id);
+const store = {
+  get(k) { try { return JSON.parse(localStorage.getItem(k)); } catch { return null; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} },
+};
+
+// ---------------- state ----------------
+let S = null;          // puzzle state
+let ws = null, demo = false;
+let conn = { slot: 0, team: 0, players: {}, slotInfo: {}, seed: "", dp: {}, retries: 0, keepAlive: false };
+
+function idsFor(base) {
+  return {
+    letter: (ch) => base + 1 + (ch.charCodeAt(0) - 65),
+    clue: (w) => base + (w.direction === "across" ? 100 : 300) + w.number,
+    loc: (w) => base + (w.direction === "across" ? 1000 : 1300) + w.number,
+    milestone: (pct) => base + 9000 + pct,
+    square: (key) => { const [r, c] = key.split(",").map(Number); return base + 5000 + r * 50 + c; },
+    reveal: base + 997,
+    check: base + 998,
+  };
+}
+
+const TRAP_NAMES = ["Scramble Trap", "Eraser Trap", "Blackout Trap", "Sticky Key Trap"];
+function ownItemName(id) {
+  const o = id - S.base;
+  if (o >= 1 && o <= 26) return "Letter " + String.fromCharCode(64 + o);
+  if (o > 100 && o <= 250) return `${o - 100} Across Clue`;
+  if (o > 300 && o <= 450) return `${o - 300} Down Clue`;
+  if (o >= 990 && o <= 993) return TRAP_NAMES[o - 990];
+  if (o === 997) return "Reveal Square";
+  if (o === 998) return "Check Word";
+  if (o === 999) return "Coffee Break";
+  return `Item ${id}`;
+}
+
+function setupPuzzle(slotData, saveKey) {
+  const base = slotData.id_base;
+  const ids = idsFor(base);
+  const cells = new Map();
+  slotData.words.forEach((w, i) => {
+    w.i = i; w.cells = [];
+    for (let k = 0; k < w.answer.length; k++) {
+      const r = w.row + (w.direction === "down" ? k : 0), c = w.col + (w.direction === "across" ? k : 0);
+      const key = r + "," + c;
+      if (!cells.has(key)) cells.set(key, { r, c, ans: w.answer[k], words: [], num: 0 });
+      const cell = cells.get(key);
+      cell.words.push(i);
+      if (k === 0) cell.num = w.number;
+      w.cells.push(key);
+    }
+    w.clueId = ids.clue(w); w.locId = ids.loc(w);
+  });
+  S = {
+    base, ids, words: slotData.words, cells, w: slotData.width, h: slotData.height,
+    requireClues: slotData.require_clues !== false,
+    milestones: slotData.milestones || [],
+    label: [(slotData.themes || []).join(" + "), slotData.difficulty ? slotData.difficulty[0].toUpperCase() + slotData.difficulty.slice(1) : ""].filter(Boolean).join(" · "),
+    squares: (slotData.squares || []).map(([r, c]) => r + "," + c),
+    items: new Set(), counts: {}, received: 0, checked: new Set(), entries: store.get(saveKey) || {}, saveKey,
+    used: Object.assign({ reveal: 0, check: 0, revealed: [], trapIndex: 0, effects: { blackout: 0, sticky: null }, mistakes: 0, pendingDeaths: [] }, store.get(saveKey + ":used") || {}),
+    deathLink: !!slotData.death_link, amnesty: slotData.death_link_amnesty ?? 2, lastDeathSent: 0,
+    pendingTraps: [], storageReady: false, away: [],
+    wrong: new Set(), sel: null, dir: "across", goalSent: false,
+  };
+  const first = S.words[0].cells[0];
+  S.sel = first; S.dir = S.words[0].direction;
+  S.squareSet = new Set(S.squares);
+  S.effects = S.used.effects;
+  $("tools").hidden = false;
+  buildGrid(); buildKeys(); render();
+}
+
+const hasLetter = (ch) => S.items.has(S.ids.letter(ch));
+const hasClue = (w) => S.items.has(w.clueId);
+const isSolved = (w) => S.checked.has(w.locId);
+const isRevealed = (key) => S.used.revealed.includes(key);
+const toolsLeft = (kind) => (S.counts[S.ids[kind]] || 0) - S.used[kind];
+const milestoneTarget = (pct) => Math.ceil((pct * S.words.length) / 100);
+// what a square currently shows: solved word > revealed > typed
+function cellValue(key) {
+  const cell = S.cells.get(key);
+  if (lockedCell(key) || isRevealed(key)) return cell.ans;
+  return S.entries[key] || "";
+}
+
+// ---------------- rendering ----------------
+function buildGrid() {
+  const g = $("grid");
+  const cs = Math.max(18, Math.min(44, Math.floor(Math.min(760, $("gridwrap").clientWidth || window.innerWidth - 60) / S.w)));
+  g.style.setProperty("--cs", cs + "px");
+  g.style.gridTemplateColumns = `repeat(${S.w}, ${cs}px)`;
+  g.innerHTML = "";
+  for (let r = 0; r < S.h; r++) for (let c = 0; c < S.w; c++) {
+    const key = r + "," + c, cell = S.cells.get(key);
+    const d = document.createElement("div");
+    d.className = "cell";
+    if (cell) {
+      d.classList.add("open"); d.dataset.key = key;
+      d.innerHTML = (cell.num ? `<span class="num">${cell.num}</span>` : "") + `<span class="ch"></span>`;
+      d.onclick = () => clickCell(key);
+      cell.el = d;
+    }
+    g.appendChild(d);
+  }
+}
+
+function buildKeys() {
+  const k = $("keys"); k.innerHTML = "";
+  for (let i = 0; i < 26; i++) {
+    const ch = String.fromCharCode(65 + i);
+    const b = document.createElement("button");
+    b.textContent = ch; b.dataset.ch = ch; b.onclick = () => typeLetter(ch);
+    k.appendChild(b);
+  }
+}
+
+function currentWord() {
+  const cell = S.cells.get(S.sel);
+  if (!cell) return null;
+  const w = cell.words.map((i) => S.words[i]);
+  return w.find((x) => x.direction === S.dir) || w[0];
+}
+
+const blackedOut = () => S.effects.blackout > 0;
+const stuckLetter = () => (S.effects.sticky && S.effects.sticky.left > 0 ? S.effects.sticky.ch : "");
+function clueText(w) {
+  if (!S.requireClues || hasClue(w)) return blackedOut() ? "— blacked out —" : w.clue;
+  return null;
+}
+
+function render() {
+  if (!S) return;
+  const cw = currentWord();
+  if (cw) S.dir = cw.direction;
+  const inWord = new Set(cw ? cw.cells : []);
+  for (const [key, cell] of S.cells) {
+    const solved = cell.words.some((i) => isSolved(S.words[i]));
+    cell.el.querySelector(".ch").textContent = cellValue(key);
+    cell.el.classList.toggle("solved", solved);
+    cell.el.classList.toggle("revealed", !solved && isRevealed(key));
+    cell.el.classList.toggle("wrong", !solved && S.wrong.has(key));
+    const isSq = S.squareSet.has(key);
+    cell.el.classList.toggle("sq", isSq);
+    cell.el.classList.toggle("done", isSq && S.checked.has(S.ids.square(key)));
+    cell.el.classList.toggle("inword", inWord.has(key));
+    cell.el.classList.toggle("sel", key === S.sel);
+  }
+  for (const dir of ["across", "down"]) {
+    const ol = $(dir); ol.innerHTML = "";
+    S.words.filter((w) => w.direction === dir).forEach((w) => {
+      const li = document.createElement("li");
+      const t = clueText(w);
+      li.className = (isSolved(w) ? "solved " : "") + (t ? "" : "locked ") + (t && blackedOut() ? "blackout " : "") + (w === cw ? "active" : "");
+      li.innerHTML = `<b>${w.number}</b><span></span>`;
+      li.querySelector("span").textContent = t ?? "Locked — needs " + ownItemName(w.clueId);
+      li.onclick = () => { S.sel = firstEmpty(w); S.dir = w.direction; render(); };
+      ol.appendChild(li);
+      if (w === cw) li.scrollIntoView({ block: "nearest" });
+    });
+  }
+  if (cw) {
+    const t = clueText(cw);
+    $("current").innerHTML = `${cw.number} ${cw.direction[0].toUpperCase() + cw.direction.slice(1)}: ` +
+      (t ? escapeHtml(t) : `<span class="lock">Locked — needs ${ownItemName(cw.clueId)}</span>`);
+  }
+  const stuck = stuckLetter();
+  for (const b of $("keys").children) if (b.dataset.ch) {
+    b.classList.toggle("off", !hasLetter(b.dataset.ch));
+    b.classList.toggle("stuck", b.dataset.ch === stuck);
+  }
+  const done = S.words.filter(isSolved).length;
+  const letters = [...Array(26)].map((_, i) => String.fromCharCode(65 + i)).filter(hasLetter).length;
+  const clues = S.words.filter(hasClue).length;
+  const sq = S.squares.length ? ` · squares ${S.squares.filter((k) => S.checked.has(S.ids.square(k))).length}/${S.squares.length}` : "";
+  const ms = S.milestones.length ? ` · milestones ${S.milestones.filter((p) => S.checked.has(S.ids.milestone(p))).length}/${S.milestones.length}` : "";
+  $("progress").textContent = (S.label ? S.label + " — " : "") + `Solved ${done}/${S.words.length} words · ${letters} letters · ${clues}/${S.words.length} clues${sq}${ms}${S.deathLink ? ` · DeathLink ${S.used.mistakes || 0}/${S.amnesty + 1} mistakes` : ""}`;
+  const r = toolsLeft("reveal"), c = toolsLeft("check");
+  $("revealBtn").textContent = `Reveal Square (${r})`; $("revealBtn").disabled = r <= 0;
+  $("checkBtn").textContent = `Check Word (${c})`; $("checkBtn").disabled = c <= 0;
+}
+
+function firstEmpty(w) {
+  return w.cells.find((k) => !cellValue(k)) || w.cells[0];
+}
+
+// ---------------- input ----------------
+function clickCell(key) {
+  if (key === S.sel) {
+    const cell = S.cells.get(key);
+    if (cell.words.length > 1) S.dir = S.dir === "across" ? "down" : "across";
+  } else {
+    S.sel = key;
+    const cell = S.cells.get(key);
+    if (!cell.words.some((i) => S.words[i].direction === S.dir)) S.dir = S.words[cell.words[0]].direction;
+  }
+  render();
+}
+
+function lockedCell(key) { return S.cells.get(key).words.some((i) => isSolved(S.words[i])); }
+
+function step(delta) {
+  const w = currentWord(); if (!w) return;
+  const idx = w.cells.indexOf(S.sel) + delta;
+  if (idx >= 0 && idx < w.cells.length) S.sel = w.cells[idx];
+}
+
+function typeLetter(ch) {
+  if (!S) return;
+  if (!hasLetter(ch)) {
+    const b = [...$("keys").children].find((x) => x.dataset.ch === ch);
+    if (b) { b.classList.add("flash"); setTimeout(() => b.classList.remove("flash"), 400); }
+    log(`You don't have Letter ${ch} yet.`);
+    return;
+  }
+  if (stuckLetter() === ch) {
+    const b = [...$("keys").children].find((x) => x.dataset.ch === ch);
+    if (b) { b.classList.add("flash"); setTimeout(() => b.classList.remove("flash"), 400); }
+    log(`Letter ${ch} is stuck for ${Math.ceil(S.effects.sticky.left / 1000)} more seconds.`);
+    return;
+  }
+  const key = S.sel, wasEmpty = !cellValue(key);
+  if (!lockedCell(key) && !isRevealed(key)) { S.entries[key] = ch; S.wrong.delete(key); store.set(S.saveKey, S.entries); }
+  step(1); evaluate();
+  if (wasEmpty) checkMistake(key);
+  render();
+}
+
+function erase() {
+  if (!S) return;
+  const fixed = (k) => lockedCell(k) || isRevealed(k);
+  if (!S.entries[S.sel] || fixed(S.sel)) step(-1);
+  if (!fixed(S.sel)) { delete S.entries[S.sel]; S.wrong.delete(S.sel); store.set(S.saveKey, S.entries); }
+  render();
+}
+
+function move(dr, dc) {
+  const cell = S.cells.get(S.sel);
+  let r = cell.r, c = cell.c;
+  for (let n = 0; n < Math.max(S.w, S.h); n++) {
+    r += dr; c += dc;
+    if (r < 0 || c < 0 || r >= S.h || c >= S.w) return;
+    if (S.cells.has(r + "," + c)) { S.sel = r + "," + c; S.dir = dr ? "down" : "across"; render(); return; }
+  }
+}
+
+function nextWord(back) {
+  const w = currentWord(); let i = S.words.indexOf(w);
+  i = (i + (back ? -1 : 1) + S.words.length) % S.words.length;
+  const n = S.words[i]; S.sel = firstEmpty(n); S.dir = n.direction; render();
+}
+
+document.addEventListener("keydown", (e) => {
+  if (!S || e.target.tagName === "INPUT" || e.ctrlKey || e.metaKey || e.altKey) return;
+  const k = e.key;
+  if (/^[a-zA-Z]$/.test(k)) typeLetter(k.toUpperCase());
+  else if (k === "Backspace" || k === "Delete") erase();
+  else if (k === "ArrowLeft") move(0, -1);
+  else if (k === "ArrowRight") move(0, 1);
+  else if (k === "ArrowUp") move(-1, 0);
+  else if (k === "ArrowDown") move(1, 0);
+  else if (k === "Tab") nextWord(e.shiftKey);
+  else if (k === " ") { clickCell(S.sel); }
+  else return;
+  e.preventDefault();
+});
+
+// ---------------- game logic ----------------
+function evaluate() {
+  const newly = [];
+  for (const w of S.words) {
+    if (isSolved(w)) continue;
+    const correct = w.cells.every((k) => cellValue(k) === S.cells.get(k).ans);
+    if (correct && (!S.requireClues || hasClue(w))) { S.checked.add(w.locId); newly.push(w); }
+  }
+  // a square's check goes out once a word through it is solved, or once it's revealed
+  const newSquares = S.squares.filter((k) => !S.checked.has(S.ids.square(k)) && (lockedCell(k) || isRevealed(k)));
+  newSquares.forEach((k) => S.checked.add(S.ids.square(k)));
+  const solvedCount = S.words.filter(isSolved).length;
+  const newMilestones = S.milestones.filter((p) => !S.checked.has(S.ids.milestone(p)) && solvedCount >= milestoneTarget(p));
+  newMilestones.forEach((p) => { S.checked.add(S.ids.milestone(p)); log(`Milestone: ${p}% solved!`); });
+  if (newly.length || newMilestones.length || newSquares.length) {
+    newly.forEach((w) => log(`Solved ${w.number} ${w.direction}: ${w.answer}`));
+    if (demo) newly.forEach(demoReward);
+    else send({ cmd: "LocationChecks", locations: newly.map((w) => w.locId).concat(newSquares.map(S.ids.square), newMilestones.map(S.ids.milestone)) });
+  }
+  if (!S.goalSent && S.words.every(isSolved)) {
+    S.goalSent = true;
+    log("Puzzle complete!");
+    if (!demo) send({ cmd: "StatusUpdate", status: 30 });
+  }
+}
+
+const isTrap = (id) => id - S.base >= 990 && id - S.base <= 993;
+function addItems(ids, start) {
+  ids.forEach((id, k) => {
+    S.items.add(id); S.counts[id] = (S.counts[id] || 0) + 1;
+    if (isTrap(id)) S.pendingTraps.push({ index: start + k, id });
+  });
+  S.received = start + ids.length;
+}
+function receive(ids, start = S.received) {
+  addItems(ids, start);
+  processTraps(); evaluate(); render();
+}
+
+// ---------------- traps ----------------
+// Each trap fires once. trapIndex (saved on the server) is the item index we've processed traps up to,
+// so reconnecting or opening another browser never replays old traps.
+function processTraps() {
+  if (!S.storageReady || !S.pendingTraps.length) return;
+  let fired = false;
+  for (const t of S.pendingTraps.sort((a, b) => a.index - b.index)) {
+    if (t.index < (S.used.trapIndex || 0)) continue;
+    applyTrap(t.id); S.used.trapIndex = t.index + 1; fired = true;
+  }
+  S.pendingTraps = [];
+  if (fired) saveUsed();
+}
+
+// ---------------- DeathLink ----------------
+// A mistake = your own keystroke fills the last empty square of a word and the word is wrong.
+// Every (amnesty + 1)th mistake sends a death. Scrambles/erasers never count (they don't type).
+function checkMistake(key) {
+  const words = S.cells.get(key).words.map((i) => S.words[i]).filter((w) => !isSolved(w));
+  const wrong = words.find((w) => w.cells.every((k) => cellValue(k)) && w.cells.some((k) => cellValue(k) !== S.cells.get(k).ans));
+  if (!wrong) return;
+  S.used.mistakes = (S.used.mistakes || 0) + 1;
+  if (S.deathLink && S.used.mistakes > S.amnesty) {
+    S.used.mistakes = 0;
+    sendDeath(`${playerName(conn.slot)} filled in a wrong word`);
+  } else if (S.deathLink) {
+    log(`That's not it (${wrong.number} ${wrong.direction}). Mistake ${S.used.mistakes} of ${S.amnesty + 1} before a DeathLink.`);
+  }
+  saveUsed();
+}
+
+function sendDeath(cause) {
+  if (demo) { log("Demo: this would send a DeathLink."); return; }
+  const time = Date.now() / 1000;
+  S.lastDeathSent = time;
+  send({ cmd: "Bounce", tags: ["DeathLink"], data: { time, source: playerName(conn.slot), cause } });
+  showBanner("You sent a DeathLink! Everyone on DeathLink loses progress.", 4000);
+  log("You sent a DeathLink.");
+}
+
+function receiveDeath(data) {
+  if (!S || !S.deathLink || !data || data.time === S.lastDeathSent) return;
+  if ((S.used.pendingDeaths || []).some((d) => d.time === data.time)) return;
+  S.used.pendingDeaths.push({ time: data.time, source: data.source || "Someone", cause: data.cause || "" });
+  log(`DeathLink from ${data.source || "someone"}${data.cause ? `: ${data.cause}` : ""}`);
+  saveUsed();
+  processDeaths();
+}
+
+// Deaths wait until you're looking at the crossword, like timed traps. They're saved on the server,
+// so reloading doesn't dodge one.
+function processDeaths() {
+  if (!S || !S.storageReady || !(S.used.pendingDeaths || []).length) return;
+  if (!isActive() && !demo) { document.title = `(DeathLink!) ${BASE_TITLE}`; return; }
+  const deaths = S.used.pendingDeaths;
+  S.used.pendingDeaths = [];
+  const keys = typedKeys();
+  keys.forEach((k) => { delete S.entries[k]; S.wrong.delete(k); });
+  store.set(S.saveKey, S.entries);
+  const who = [...new Set(deaths.map((d) => d.source))].join(", ");
+  const cause = deaths.length === 1 && deaths[0].cause ? ` (${deaths[0].cause})` : "";
+  showBanner(`DeathLink! ${who}${deaths.length > 1 ? ` x${deaths.length}` : ""}${cause}. ${keys.length} typed letter${keys.length === 1 ? "" : "s"} wiped.`, 6000);
+  log(`DeathLink wiped ${keys.length} typed letters.`);
+  document.title = BASE_TITLE;
+  saveUsed(); render();
+}
+
+// ---------------- "are you actually looking at the crossword?" ----------------
+// Timed traps only count down while this tab is visible and focused, so a trap that lands while
+// you're playing another game waits for you instead of expiring unseen.
+const BASE_TITLE = document.title;
+function isActive() { return document.visibilityState === "visible" && document.hasFocus(); }
+
+let bannerTimer = 0;
+function showBanner(text, ms) {
+  const b = $("banner"); b.textContent = text; b.classList.add("show");
+  clearTimeout(bannerTimer); bannerTimer = setTimeout(() => b.classList.remove("show"), ms);
+  const g = $("grid"); g.classList.remove("grid-shake"); void g.offsetWidth; g.classList.add("grid-shake");
+}
+function banner(text) {
+  log(text);
+  if (isActive() || demo) { showBanner(text, 4000); return; }
+  S.away.push(text.replace(/!.*$/, ""));
+  document.title = `(Trap!) ${BASE_TITLE}`;
+}
+function welcomeBack() {
+  if (!S || !S.away || !S.away.length) return;
+  const counts = {};
+  S.away.forEach((t) => { counts[t] = (counts[t] || 0) + 1; });
+  const list = Object.entries(counts).map(([t, n]) => (n > 1 ? `${t} x${n}` : t)).join(", ");
+  S.away = [];
+  document.title = BASE_TITLE;
+  showBanner(`While you were away: ${list}. Timers start now.`, 7000);
+  render();
+}
+["focus", "visibilitychange"].forEach((ev) => (ev === "focus" ? window : document).addEventListener(ev, () => { if (isActive()) { welcomeBack(); processDeaths(); } }));
+
+// Tick timed effects. Paused whenever you're not looking.
+let lastTick = Date.now(), lastSave = 0, wasRunning = false;
+function effectsLabel() {
+  const parts = [], paused = !isActive() && !demo;
+  if (S.effects.blackout > 0) parts.push(`Blackout ${Math.ceil(S.effects.blackout / 1000)}s`);
+  if (stuckLetter()) parts.push(`Sticky ${S.effects.sticky.ch} ${Math.ceil(S.effects.sticky.left / 1000)}s`);
+  return parts.map((p) => `<span class="${paused ? "paused" : ""}">${p}${paused ? " (paused)" : ""}</span>`).join("");
+}
+setInterval(() => {
+  const now = Date.now(), dt = now - lastTick; lastTick = now;
+  if (!S || !S.effects) return;
+  const running = S.effects.blackout > 0 || stuckLetter() !== "";
+  if (running && (isActive() || demo)) {
+    const before = [blackedOut(), stuckLetter()];
+    if (S.effects.blackout > 0) S.effects.blackout = Math.max(0, S.effects.blackout - dt);
+    if (S.effects.sticky && S.effects.sticky.left > 0) S.effects.sticky.left = Math.max(0, S.effects.sticky.left - dt);
+    if (S.effects.sticky && S.effects.sticky.left === 0) S.effects.sticky = null;
+    if (before[0] !== blackedOut() || before[1] !== stuckLetter()) render();
+    if (now - lastSave > 5000) { lastSave = now; saveUsed(); }
+  } else if (wasRunning && !running) saveUsed();
+  wasRunning = running;
+  const html = effectsLabel();
+  if ($("effects").innerHTML !== html) $("effects").innerHTML = html;
+}, 250);
+window.addEventListener("blur", () => { if (S && S.effects && (S.effects.blackout > 0 || stuckLetter())) saveUsed(); });
+
+function typedKeys() {
+  return [...S.cells.keys()].filter((k) => S.entries[k] && !lockedCell(k) && !isRevealed(k));
+}
+
+function applyTrap(id) {
+  const kind = TRAP_NAMES[id - S.base - 990];
+  if (kind === "Scramble Trap") {
+    const keys = typedKeys();
+    if (keys.length < 2) { banner("Scramble Trap! Nothing to scramble this time."); return; }
+    const vals = keys.map((k) => S.entries[k]);
+    for (let i = vals.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [vals[i], vals[j]] = [vals[j], vals[i]]; }
+    keys.forEach((k, i) => { S.entries[k] = vals[i]; S.wrong.delete(k); });
+    store.set(S.saveKey, S.entries);
+    banner(`Scramble Trap! ${keys.length} of your letters got shuffled.`);
+  } else if (kind === "Eraser Trap") {
+    const scored = S.words.filter((w) => !isSolved(w))
+      .map((w) => ({ w, keys: w.cells.filter((k) => S.entries[k] && !lockedCell(k) && !isRevealed(k)) }))
+      .filter((x) => x.keys.length);
+    if (!scored.length) { banner("Eraser Trap! Nothing to erase this time."); return; }
+    const most = Math.max(...scored.map((x) => x.keys.length));
+    const pick = scored.filter((x) => x.keys.length === most);
+    const { w, keys } = pick[Math.floor(Math.random() * pick.length)];
+    keys.forEach((k) => { delete S.entries[k]; S.wrong.delete(k); });
+    store.set(S.saveKey, S.entries);
+    banner(`Eraser Trap! ${w.number} ${w.direction} got wiped.`);
+  } else if (kind === "Blackout Trap") {
+    S.effects.blackout = (S.effects.blackout || 0) + 30000;
+    banner("Blackout Trap! Clues are hidden for 30 seconds.");
+  } else if (kind === "Sticky Key Trap") {
+    const owned = [...Array(26)].map((_, i) => String.fromCharCode(65 + i)).filter(hasLetter);
+    const needed = new Set(S.words.filter((w) => !isSolved(w)).flatMap((w) => w.cells.filter((k) => !cellValue(k)).map((k) => S.cells.get(k).ans)));
+    const choices = owned.filter((c) => needed.has(c));
+    const pool = choices.length ? choices : owned;
+    if (!pool.length) { banner("Sticky Key Trap! No keys to jam."); return; }
+    const ch = pool[Math.floor(Math.random() * pool.length)];
+    S.effects.sticky = { ch, left: 60000 };
+    banner(`Sticky Key Trap! Letter ${ch} is stuck for 60 seconds.`);
+  }
+}
+
+// ---------------- tools (consumable items) ----------------
+function saveUsed() {
+  store.set(S.saveKey + ":used", S.used);
+  if (!demo) send({ cmd: "Set", key: storageKey(), default: {}, want_reply: false,
+    operations: [{ operation: "replace", value: S.used }] });
+}
+function storageKey() { return `crossword_${conn.team}_${conn.slot}`; }
+function mergeUsed(remote) {
+  if (!remote) return;
+  S.used.reveal = Math.max(S.used.reveal, remote.reveal || 0);
+  S.used.check = Math.max(S.used.check, remote.check || 0);
+  S.used.revealed = [...new Set(S.used.revealed.concat(remote.revealed || []))];
+  S.used.trapIndex = Math.max(S.used.trapIndex || 0, remote.trapIndex || 0);
+  // keep whichever copy has more trap time left, so reloading or switching devices can't skip a trap
+  const re = remote.effects || {}, le = S.used.effects;
+  le.blackout = Math.max(le.blackout || 0, re.blackout || 0);
+  if (re.sticky && re.sticky.left > ((le.sticky && le.sticky.left) || 0)) le.sticky = re.sticky;
+  S.effects = S.used.effects;
+  S.used.mistakes = Math.max(S.used.mistakes || 0, remote.mistakes || 0);
+  const seen = new Set((S.used.pendingDeaths || []).map((d) => d.time));
+  S.used.pendingDeaths = (S.used.pendingDeaths || []).concat((remote.pendingDeaths || []).filter((d) => !seen.has(d.time)));
+}
+
+function useReveal() {
+  if (!S || toolsLeft("reveal") <= 0) return;
+  const w = currentWord();
+  // the selected square, or else the first unfilled/incorrect square of the current word
+  let key = S.sel;
+  if (cellValue(key) === S.cells.get(key).ans && (lockedCell(key) || isRevealed(key) || S.entries[key])) {
+    key = w && w.cells.find((k) => cellValue(k) !== S.cells.get(k).ans);
+  }
+  if (!key || lockedCell(key) || isRevealed(key)) { log("Nothing to reveal here — pick an unsolved square."); return; }
+  S.used.reveal++; S.used.revealed.push(key); S.wrong.delete(key);
+  log(`Revealed a ${S.cells.get(key).ans}.`);
+  saveUsed(); evaluate(); render();
+}
+
+function useCheck() {
+  if (!S || toolsLeft("check") <= 0) return;
+  const w = currentWord();
+  if (!w || isSolved(w)) { log("Pick an unsolved word to check."); return; }
+  const typed = w.cells.filter((k) => S.entries[k] && !lockedCell(k) && !isRevealed(k));
+  if (!typed.length) { log("Type some letters in this word before checking it."); return; }
+  const bad = typed.filter((k) => S.entries[k] !== S.cells.get(k).ans);
+  bad.forEach((k) => S.wrong.add(k));
+  S.used.check++;
+  log(bad.length ? `${w.number} ${w.direction}: ${bad.length} wrong letter${bad.length > 1 ? "s" : ""} marked.` : `${w.number} ${w.direction}: every letter you've typed is right.`);
+  saveUsed(); render();
+}
+
+// ---------------- demo mode ----------------
+function startDemo() {
+  if (ws) { ws.onclose = null; ws.close(); ws = null; }
+  clearInterval(reconnectTimer); conn.keepAlive = false; session.set(null);
+  demo = true;
+  setupPuzzle(JSON.parse(JSON.stringify(DEMO)), "cw-demo");
+  S.entries = {}; store.set(S.saveKey, {});
+  const start = new Set("AEIOURSTLN");
+  const starters = [...S.words].sort((a, b) => [...new Set(a.answer)].filter((c) => !start.has(c)).length - [...new Set(b.answer)].filter((c) => !start.has(c)).length).slice(0, 3);
+  starters.forEach((w) => [...w.answer].forEach((c) => start.add(c)));
+  S.demoPool = [];
+  const used = new Set(S.words.flatMap((w) => [...w.answer]));
+  used.forEach((c) => { if (!start.has(c)) S.demoPool.push(S.ids.letter(c)); });
+  S.words.forEach((w) => { if (!starters.includes(w)) S.demoPool.push(w.clueId); });
+  S.demoPool.push(S.ids.reveal, S.ids.reveal, S.ids.check, S.base + 990, S.base + 991, S.base + 992, S.base + 993);
+  S.used = { reveal: 0, check: 0, revealed: [], trapIndex: 0, effects: { blackout: 0, sticky: null }, mistakes: 0, pendingDeaths: [] };
+  S.effects = S.used.effects; S.storageReady = true; S.milestones = [25, 50, 75, 100];
+  S.squares = [...S.cells.keys()].sort((a, b) => { const [ar, ac] = a.split(",").map(Number), [br, bc] = b.split(",").map(Number); return ar - br || ac - bc; }).filter((_, i) => i % 3 === 2);
+  S.squareSet = new Set(S.squares);
+  $("log").innerHTML = "";
+  log("Demo: each word you solve 'receives' a random item. Starting with vowels + R S T L N.");
+  setStatus("Demo mode");
+  receive([...start].map(S.ids.letter).concat(starters.map((w) => w.clueId), [S.ids.reveal, S.ids.check]));
+}
+
+function demoReward() {
+  for (let n = 0; n < 2 && S.demoPool.length; n++) {
+    const id = S.demoPool.splice(Math.floor(Math.random() * S.demoPool.length), 1)[0];
+    log(`Received <span class="${isTrap(id) ? "" : "i-prog"}">${ownItemName(id)}</span>`, true);
+    addItems([id], S.received);
+  }
+  // never soft-lock the demo: if nothing is solvable, grant what the cheapest word still needs
+  const needs = (w) => [...new Set(w.answer)].filter((c) => !hasLetter(c)).map(S.ids.letter).concat(hasClue(w) ? [] : [w.clueId]);
+  const open = S.words.filter((w) => !isSolved(w));
+  if (open.length && !open.some((w) => needs(w).length === 0)) {
+    open.sort((a, b) => needs(a).length - needs(b).length);
+    for (const id of needs(open[0]).filter((x) => !S.items.has(x))) {
+      S.demoPool = S.demoPool.filter((x) => x !== id); addItems([id], S.received);
+      log(`Received <span class="i-prog">${ownItemName(id)}</span>`, true);
+    }
+  }
+  setTimeout(() => { processTraps(); evaluate(); render(); });
+}
+
+// ---------------- Archipelago connection ----------------
+function setStatus(t) { $("status").textContent = t; }
+function send(p) { if (ws && ws.readyState === 1) ws.send(JSON.stringify([p])); }
+function escapeHtml(s) { return String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c])); }
+function log(msg, html) {
+  const d = document.createElement("div");
+  if (html) d.innerHTML = msg; else d.textContent = msg;
+  const L = $("log"); L.appendChild(d); L.scrollTop = L.scrollHeight;
+  while (L.children.length > 300) L.firstChild.remove();
+}
+
+function playerName(slot) { return conn.players[slot] || `Player ${slot}`; }
+function gameOf(slot) { return (conn.slotInfo[slot] || {}).game; }
+function itemName(id, slot) {
+  const g = gameOf(slot);
+  if (g === GAME && S) return ownItemName(id);
+  return (conn.dp[g] && conn.dp[g].items[id]) || `Item ${id}`;
+}
+function locName(id, slot) {
+  const g = gameOf(slot);
+  return (conn.dp[g] && conn.dp[g].locs[id]) || `Location ${id}`;
+}
+
+function uuid() {
+  let u = store.get("cw-uuid");
+  if (!u) { u = (crypto.randomUUID ? crypto.randomUUID() : String(Math.random()).slice(2)); store.set("cw-uuid", u); }
+  return u;
+}
+
+let connHint = "";
+function shareLink() {
+  const u = new URL(location.href);
+  u.search = "";
+  if ($("server").value.trim()) u.searchParams.set("server", $("server").value.trim());
+  if ($("slot").value.trim()) u.searchParams.set("slot", $("slot").value.trim());
+  const text = u.toString();
+  const done = () => setStatus("Link copied (password not included)");
+  if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(text).then(done, () => prompt("Copy this link:", text));
+  else prompt("Copy this link:", text);
+}
+
+const session = {
+  get() { try { return JSON.parse(sessionStorage.getItem("cw-session")); } catch { return null; } },
+  set(v) { try { v ? sessionStorage.setItem("cw-session", JSON.stringify(v)) : sessionStorage.removeItem("cw-session"); } catch {} },
+};
+let reconnectTimer = 0;
+function scheduleReconnect() {
+  const n = Math.min(conn.retries++, 5), wait = [2, 4, 8, 15, 30, 30][n];
+  let left = wait;
+  setStatus(`Connection lost. Reconnecting in ${left}s…`);
+  clearInterval(reconnectTimer);
+  reconnectTimer = setInterval(() => {
+    left--;
+    if (left > 0) { setStatus(`Connection lost. Reconnecting in ${left}s…`); return; }
+    clearInterval(reconnectTimer);
+    tryUrl(conn.urls, 0, conn.slotName);
+  }, 1000);
+}
+
+function connect() {
+  let addr = $("server").value.trim() || "archipelago.gg:38281";
+  const slot = $("slot").value.trim();
+  if (!slot) { setStatus("Enter your slot name"); return; }
+  store.set("cw-conn", { server: addr, slot });
+  if (ws) { ws.onclose = null; ws.close(); }
+  clearInterval(reconnectTimer);
+  demo = false; conn.retries = 0; conn.keepAlive = false;
+  conn.addr = addr; conn.slotName = slot; conn.password = $("password").value || null;
+  let urls;
+  if (/^wss?:\/\//.test(addr)) urls = [addr];
+  else {
+    if (!/:\d+$/.test(addr)) addr += ":38281";
+    const host = addr.replace(/:\d+$/, "");
+    const loopback = /^(localhost|127\.\d+\.\d+\.\d+|\[::1\])$/.test(host);
+    const lan = /^(192\.168\.|10\.|172\.(1[6-9]|2\d|3[01])\.)/.test(host);
+    if (location.protocol === "https:") {
+      // Browsers only allow insecure ws:// from an https page when it points at this computer.
+      urls = loopback ? ["ws://" + addr, "wss://" + addr] : ["wss://" + addr];
+      connHint = lan ? "Browsers block insecure LAN connections from https pages. Download this page and open the file locally to reach a LAN server." : "";
+    } else {
+      urls = (loopback || lan) ? ["ws://" + addr, "wss://" + addr] : ["wss://" + addr, "ws://" + addr];
+      connHint = "";
+    }
+  }
+  conn.urls = urls;
+  tryUrl(urls, 0, slot);
+}
+
+function tryUrl(urls, i, slot) {
+  if (i >= urls.length) {
+    if (conn.keepAlive) { scheduleReconnect(); return; }
+    setStatus("Could not reach server");
+    log(connHint || "Could not reach the server. Check the address and port, and that the room is still running.");
+    return;
+  }
+  setStatus("Connecting to " + urls[i] + "…");
+  let opened = false;
+  ws = new WebSocket(urls[i]);
+  ws.onopen = () => { opened = true; };
+  ws.onerror = () => {};
+  ws.onclose = () => {
+    if (!opened) { tryUrl(urls, i + 1, slot); return; }
+    if (conn.keepAlive && !demo) { log("Connection lost. Reconnecting automatically…"); scheduleReconnect(); return; }
+    setStatus("Disconnected"); log("Disconnected from server.");
+  };
+  ws.onmessage = (e) => { for (const p of JSON.parse(e.data)) handle(p, slot); };
+}
+
+function handle(p, slotName) {
+  switch (p.cmd) {
+    case "RoomInfo":
+      conn.seed = p.seed_name;
+      send({ cmd: "GetDataPackage", games: p.games });
+      send({
+        cmd: "Connect", game: GAME, name: slotName, password: conn.password, uuid: uuid(),
+        version: { major: 0, minor: 6, build: 4, class: "Version" }, items_handling: 7, tags: [], slot_data: true,
+      });
+      break;
+    case "DataPackage":
+      for (const [g, d] of Object.entries(p.data.games)) {
+        conn.dp[g] = { items: {}, locs: {} };
+        for (const [n, id] of Object.entries(d.item_name_to_id)) conn.dp[g].items[id] = n;
+        for (const [n, id] of Object.entries(d.location_name_to_id)) conn.dp[g].locs[id] = n;
+      }
+      break;
+    case "ConnectionRefused":
+      conn.keepAlive = false; session.set(null);
+      setStatus("Refused: " + (p.errors || []).join(", "));
+      log("Connection refused: " + (p.errors || []).join(", "));
+      break;
+    case "Connected":
+      conn.slot = p.slot; conn.team = p.team;
+      conn.players = Object.fromEntries(p.players.map((x) => [x.slot, x.alias || x.name]));
+      conn.slotInfo = p.slot_info || {};
+      const key = `cw:${conn.seed}:${p.slot}`;
+      const resumed = S && S.saveKey === key && !demo;
+      if (!resumed) setupPuzzle(p.slot_data, key);   // same room after a drop: keep the board as it is
+      for (const id of p.checked_locations) S.checked.add(id);
+      conn.retries = 0; conn.keepAlive = true;
+      session.set({ server: conn.addr, slot: conn.slotName, password: conn.password });
+      if (S.deathLink) send({ cmd: "ConnectUpdate", tags: ["DeathLink"] });
+      send({ cmd: "Get", keys: [storageKey()] });
+      // if the server never answers, don't hold traps forever (local save still prevents most replays)
+      setTimeout(() => { if (S && !S.storageReady) { S.storageReady = true; processTraps(); render(); } }, 5000);
+      setStatus(`Connected as ${playerName(p.slot)}`);
+      log(resumed ? "Reconnected." : `Connected. ${S.words.length} words in your puzzle.${S.deathLink ? " DeathLink is on." : ""}`);
+      render();
+      break;
+    case "ReceivedItems":
+      if (!S) break;
+      if (p.index === 0) { S.items.clear(); S.counts = {}; S.received = 0; S.pendingTraps = []; }
+      else if (p.index !== S.received) { send({ cmd: "Sync" }); break; }
+      receive(p.items.map((x) => x.item), p.index);
+      break;
+    case "Retrieved":
+      if (S && p.keys && storageKey() in p.keys) {
+        mergeUsed(p.keys[storageKey()]); store.set(S.saveKey + ":used", S.used);
+        S.storageReady = true; processTraps(); processDeaths(); evaluate(); render();
+      }
+      break;
+    case "RoomUpdate":
+      if (S && p.checked_locations) { p.checked_locations.forEach((id) => S.checked.add(id)); render(); }
+      break;
+    case "Bounced":
+      if ((p.tags || []).includes("DeathLink")) receiveDeath(p.data);
+      break;
+    case "PrintJSON":
+      log(p.data.map(partHtml).join(""), true);
+      break;
+  }
+}
+
+function partHtml(part) {
+  const t = part.text ?? "";
+  switch (part.type) {
+    case "player_id": {
+      const s = Number(t);
+      return `<span class="${s === conn.slot ? "p-self" : ""}">${escapeHtml(playerName(s))}</span>`;
+    }
+    case "item_id": {
+      const cls = part.flags & 1 ? "i-prog" : part.flags & 2 ? "i-use" : "";
+      return `<span class="${cls}">${escapeHtml(itemName(Number(t), part.player))}</span>`;
+    }
+    case "location_id":
+      return `<span class="loc">${escapeHtml(locName(Number(t), part.player))}</span>`;
+    default:
+      return escapeHtml(t);
+  }
+}
+
+// ---------------- wiring ----------------
+$("connectBtn").onclick = connect;
+$("demoBtn").onclick = startDemo;
+$("shareBtn").onclick = shareLink;
+$("revealBtn").onclick = useReveal;
+$("checkBtn").onclick = useCheck;
+["server", "slot", "password"].forEach((id) => $(id).addEventListener("keydown", (e) => { if (e.key === "Enter") connect(); }));
+$("chat").onsubmit = (e) => {
+  e.preventDefault();
+  const t = $("chatIn").value.trim(); if (!t) return;
+  if (ws && !demo) send({ cmd: "Say", text: t }); else log("Chat needs a server connection.");
+  $("chatIn").value = "";
+};
+const saved = store.get("cw-conn");
+if (saved) { $("server").value = saved.server || ""; $("slot").value = saved.slot || ""; }
+const qs = new URLSearchParams(location.search);
+if (qs.get("server")) $("server").value = qs.get("server");
+if (qs.get("slot")) $("slot").value = qs.get("slot");
+window.addEventListener("resize", () => { if (S) { buildGrid(); render(); } });
+// Chrome can unload an idle tab (or the PC sleeps); when this tab comes back, reconnect on its own.
+const resume = session.get();
+if (resume && resume.server && resume.slot) {
+  $("server").value = resume.server; $("slot").value = resume.slot; $("password").value = resume.password || "";
+  connect(); conn.keepAlive = true;
+}
+</script>
+</body>
+</html>
